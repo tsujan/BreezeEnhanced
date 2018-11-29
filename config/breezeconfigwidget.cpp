@@ -58,7 +58,7 @@ namespace Breeze
 
         connect( m_ui.fontComboBox, &QFontComboBox::currentFontChanged, [this] { updateChanged(); } );
         connect( m_ui.fontSizeSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
-        connect( m_ui.boldCheckBox, &QCheckBox::stateChanged, [this] { updateChanged(); } );
+        connect(m_ui.weightComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this] { updateChanged(); } );
         connect( m_ui.italicCheckBox, &QCheckBox::stateChanged, [this] { updateChanged(); } );
 
         // track animations changes
@@ -102,7 +102,27 @@ namespace Breeze
         QFont f; f.fromString( fontStr );
         m_ui.fontComboBox->setCurrentFont( f );
         m_ui.fontSizeSpinBox->setValue( f.pointSize() );
-        m_ui.boldCheckBox->setChecked( f.bold() );
+        int w = f.weight();
+        switch (w) {
+            case QFont::Medium:
+                m_ui.weightComboBox->setCurrentIndex(1);
+                break;
+            case QFont::DemiBold:
+                m_ui.weightComboBox->setCurrentIndex(2);
+                break;
+            case QFont::Bold:
+                m_ui.weightComboBox->setCurrentIndex(3);
+                break;
+            case QFont::ExtraBold:
+                m_ui.weightComboBox->setCurrentIndex(4);
+                break;
+            case QFont::Black:
+                m_ui.weightComboBox->setCurrentIndex(5);
+                break;
+            default:
+                m_ui.weightComboBox->setCurrentIndex(0);
+                break;
+        }
         m_ui.italicCheckBox->setChecked( f.italic() );
 
         // load shadows
@@ -143,7 +163,27 @@ namespace Breeze
 
         QFont f = m_ui.fontComboBox->currentFont();
         f.setPointSize(m_ui.fontSizeSpinBox->value());
-        f.setBold(m_ui.boldCheckBox->isChecked());
+        int indx = m_ui.weightComboBox->currentIndex();
+        switch (indx) {
+            case 1:
+                f.setWeight(QFont::Medium);
+                break;
+            case 2:
+                f.setWeight(QFont::DemiBold);
+                break;
+            case 3:
+                f.setWeight(QFont::Bold);
+                break;
+            case 4:
+                f.setWeight(QFont::ExtraBold);
+                break;
+            case 5:
+                f.setWeight(QFont::Black);
+                break;
+            default:
+                f.setBold(false);
+                break;
+        }
         f.setItalic(m_ui.italicCheckBox->isChecked());
         m_internalSettings->setTitleBarFont(f.toString());
 
@@ -200,7 +240,27 @@ namespace Breeze
         QFont f; f.fromString("Sans,11,-1,5,50,0,0,0,0,0");
         m_ui.fontComboBox->setCurrentFont( f );
         m_ui.fontSizeSpinBox->setValue( f.pointSize() );
-        m_ui.boldCheckBox->setChecked( f.bold() );
+        int w = f.weight();
+        switch (w) {
+            case QFont::Medium:
+                m_ui.weightComboBox->setCurrentIndex(1);
+                break;
+            case QFont::DemiBold:
+                m_ui.weightComboBox->setCurrentIndex(2);
+                break;
+            case QFont::Bold:
+                m_ui.weightComboBox->setCurrentIndex(3);
+                break;
+            case QFont::ExtraBold:
+                m_ui.weightComboBox->setCurrentIndex(4);
+                break;
+            case QFont::Black:
+                m_ui.weightComboBox->setCurrentIndex(5);
+                break;
+            default:
+                m_ui.weightComboBox->setCurrentIndex(0);
+                break;
+        }
         m_ui.italicCheckBox->setChecked( f.italic() );
 
         m_ui.shadowSize->setCurrentIndex( m_internalSettings->shadowSize() );
@@ -230,10 +290,9 @@ namespace Breeze
         else if( m_ui.opacitySpinBox->value() != m_internalSettings->backgroundOpacity() ) modified = true;
         else if( m_ui.gradientSpinBox->value() != m_internalSettings->backgroundGradientIntensity() ) modified = true;
 
-        // font
+        // font (also see below)
         else if( m_ui.fontComboBox->currentFont().toString() != f.family() ) modified = true;
         else if( m_ui.fontSizeSpinBox->value() != f.pointSize() ) modified = true;
-        else if( m_ui.boldCheckBox->isChecked() != f.bold() ) modified = true;
         else if( m_ui.italicCheckBox->isChecked() != f.italic() ) modified = true;
 
         // animations
@@ -247,6 +306,29 @@ namespace Breeze
 
         // exceptions
         else if( m_ui.exceptions->isChanged() ) modified = true;
+        else {
+            int indx = m_ui.weightComboBox->currentIndex();
+            switch (indx) {
+                case 1:
+                    if (f.weight() != QFont::Medium) modified = true;
+                    break;
+                case 2:
+                    if (f.weight() != QFont::DemiBold) modified = true;
+                    break;
+                case 3:
+                    if (f.weight() != QFont::Bold) modified = true;
+                    break;
+                case 4:
+                    if (f.weight() != QFont::ExtraBold) modified = true;
+                    break;
+                case 5:
+                    if (f.weight() != QFont::Black) modified = true;
+                    break;
+                default:
+                    if (f.bold()) modified = true;
+                    break;
+            }
+        }
 
         setChanged( modified );
 
