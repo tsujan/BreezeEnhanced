@@ -98,8 +98,6 @@ namespace Breeze
         inline bool isBottomEdge() const;
 
         inline bool hideTitleBar() const;
-        inline bool opaqueTitleBar() const;
-        inline bool flatTitleBar() const;
         //@}
 
         public Q_SLOTS:
@@ -129,6 +127,13 @@ namespace Breeze
         inline bool hasBorders() const;
         inline bool hasNoBorders() const;
         inline bool hasNoSideBorders() const;
+        //@}
+
+        //*@name color customization
+        //@{
+        inline bool opaqueTitleBar() const;
+        inline bool flatTitleBar() const;
+        inline int titleBarAlpha() const;
         //@}
 
         //*@name size grip
@@ -204,6 +209,16 @@ namespace Breeze
 
     bool Decoration::flatTitleBar() const
     { return m_internalSettings->flatTitleBar(); }
+
+    int Decoration::titleBarAlpha() const
+    {
+        if (m_internalSettings->opaqueTitleBar())
+            return 255;
+        int a = m_internalSettings->opacityOverride() > -1 ? m_internalSettings->opacityOverride()
+                                                           : m_internalSettings->backgroundOpacity();
+        a =  qBound(0, a, 100);
+        return qRound(static_cast<qreal>(a) * static_cast<qreal>(2.55));
+    }
 
 }
 
