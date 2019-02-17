@@ -160,7 +160,7 @@
        <item row="4" column="0" colspan="3">
         <widget class="QCheckBox" name="drawBackgroundGradient">
          <property name="text">
-          <string>Draw window background gradient</string>
+          <string>Draw titlebar background gradient</string>
          </property>
         </widget>
        </item>
