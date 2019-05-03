@@ -1,6 +1,7 @@
 V5.15
 ---------
  * Imported the changes in Breeze 5.15.0.
+ * Added the checkbox "Only for dialogs" to the exception dialog to support separate settings for dialogs.
 
 V5.14
 ---------

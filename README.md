@@ -33,6 +33,16 @@ sudo make install
 ```
 After the intallation, restart KWin by logging out and in. Then, BreezeEnhanced will appear in *System Settings &rarr; Application Style &rarr; Window Decorations*.
 
+### Installation with package manager
+
+Users of Arch and its derivatives can install breeze-enhanced-git from AUR.
+
+Users of OpenSUSE Tumbleweed can do (thanks to trmdi at GitHub):
+```sh
+sudo zypper ar obs://home:trmdi trmdi
+sudo zypper in -r trmdi BreezeEnhanced
+```
+
 ## Screenshots:
 
 ![Settings](screenshots/Settings.png?raw=true "Settings")
