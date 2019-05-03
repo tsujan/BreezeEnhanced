@@ -101,7 +101,7 @@ namespace Breeze
     {
 
         // list of items to be written
-        QStringList keys = { "Enabled", "ExceptionPattern", "ExceptionType", "HideTitleBar", "IsDialog", """OpaqueTitleBar", "OpacityOverride", "FlatTitleBar", "Mask", "BorderSize"};
+        QStringList keys = { "Enabled", "ExceptionPattern", "ExceptionType", "HideTitleBar", "IsDialog", "OpaqueTitleBar", "OpacityOverride", "FlatTitleBar", "Mask", "BorderSize"};
 
         // write all items
         foreach( auto key, keys )
