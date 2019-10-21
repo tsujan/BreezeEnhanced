@@ -117,6 +117,37 @@
         </widget>
        </item>
        <item row="2" column="0" colspan="3">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QLabel" name="titleMarginLabel">
+           <property name="text">
+            <string>Extra horizontal title margin:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="titleMarginSpinBox">
+           <property name="suffix">
+            <string> px</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_8">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item row="3" column="0" colspan="3">
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QLabel" name="btnSpacingLabel">
@@ -150,21 +181,21 @@
          </item>
         </layout>
        </item>
-       <item row="3" column="0" colspan="3">
+       <item row="4" column="0" colspan="3">
         <widget class="QCheckBox" name="drawBorderOnMaximizedWindows">
          <property name="text">
           <string>Allow resizing maximized windows from window edges</string>
          </property>
         </widget>
        </item>
-       <item row="4" column="0" colspan="3">
+       <item row="5" column="0" colspan="3">
         <widget class="QCheckBox" name="drawBackgroundGradient">
          <property name="text">
           <string>Draw titlebar background gradient</string>
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
+       <item row="6" column="0">
         <widget class="QLabel" name="label_7">
          <property name="enabled">
           <bool>false</bool>
@@ -177,7 +208,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="1" alignment="Qt::AlignLeft">
+       <item row="6" column="1" alignment="Qt::AlignLeft">
         <widget class="QSpinBox" name="gradientSpinBox">
          <property name="enabled">
           <bool>false</bool>
@@ -190,21 +221,21 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0" colspan="3">
+       <item row="7" column="0" colspan="3">
         <widget class="QCheckBox" name="drawSizeGrip">
          <property name="text">
           <string>Add handle to resize windows with no border</string>
          </property>
         </widget>
        </item>
-       <item row="7" column="0" colspan="3">
+       <item row="8" column="0" colspan="3">
         <widget class="QCheckBox" name="macOSButtons">
          <property name="text">
           <string>macOS-like buttons</string>
          </property>
         </widget>
        </item>
-       <item row="8" column="0" colspan="3">
+       <item row="9" column="0" colspan="3">
         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0,1">
          <item row="0" column="0">
           <widget class="QLabel" name="label_6">
@@ -344,7 +375,7 @@
          </item>
         </layout>
        </item>
-       <item row="9" column="0" colspan="3">
+       <item row="10" column="0" colspan="3">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -580,6 +611,7 @@
   <tabstop>tabWidget</tabstop>
   <tabstop>titleAlignment</tabstop>
   <tabstop>buttonSize</tabstop>
+  <tabstop>titleMarginSpinBox</tabstop>
   <tabstop>btnSpacingSpinBox</tabstop>
   <tabstop>drawBorderOnMaximizedWindows</tabstop>
   <tabstop>drawBackgroundGradient</tabstop>

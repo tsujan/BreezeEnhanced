@@ -680,14 +680,15 @@ namespace Breeze
         if( hideTitleBar() ) return qMakePair( QRect(), Qt::AlignCenter );
         else {
 
+            const int extraTitleMargin = m_internalSettings->extraTitleMargin();
             auto c = client().data();
             const int leftOffset = m_leftButtons->buttons().isEmpty() ?
-                Metrics::TitleBar_SideMargin*settings()->smallSpacing():
-                m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + Metrics::TitleBar_SideMargin*settings()->smallSpacing();
+                Metrics::TitleBar_SideMargin*settings()->smallSpacing() + extraTitleMargin :
+                m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + Metrics::TitleBar_SideMargin*settings()->smallSpacing() + extraTitleMargin;
 
             const int rightOffset = m_rightButtons->buttons().isEmpty() ?
-                Metrics::TitleBar_SideMargin*settings()->smallSpacing() :
-                size().width() - m_rightButtons->geometry().x() + Metrics::TitleBar_SideMargin*settings()->smallSpacing();
+                Metrics::TitleBar_SideMargin*settings()->smallSpacing() + extraTitleMargin:
+                size().width() - m_rightButtons->geometry().x() + Metrics::TitleBar_SideMargin*settings()->smallSpacing() + extraTitleMargin;
 
             const int yOffset = settings()->smallSpacing()*Metrics::TitleBar_TopMargin;
             const QRect maxRect( leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight() );

@@ -1,6 +1,7 @@
 V5.16
 ---------
  * Imported some of the changes in Breeze 5.16.0.
+ * Added an option for extra horizontal title margin.
 
 V5.15
 ---------

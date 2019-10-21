@@ -48,6 +48,7 @@ namespace Breeze
         // track ui changes
         connect( m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
         connect( m_ui.buttonSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
+        connect( m_ui.titleMarginSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
         connect( m_ui.btnSpacingSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
         connect( m_ui.drawBorderOnMaximizedWindows, SIGNAL(clicked()), SLOT(updateChanged()) );
         connect( m_ui.drawSizeGrip, SIGNAL(clicked()), SLOT(updateChanged()) );
@@ -86,6 +87,7 @@ namespace Breeze
         // assign to ui
         m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
         m_ui.buttonSize->setCurrentIndex( m_internalSettings->buttonSize() );
+        m_ui.titleMarginSpinBox->setValue( m_internalSettings->extraTitleMargin() );
         m_ui.btnSpacingSpinBox->setValue( m_internalSettings->buttonSpacing() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
@@ -151,6 +153,7 @@ namespace Breeze
         // apply modifications from ui
         m_internalSettings->setTitleAlignment( m_ui.titleAlignment->currentIndex() );
         m_internalSettings->setButtonSize( m_ui.buttonSize->currentIndex() );
+        m_internalSettings->setExtraTitleMargin( m_ui.titleMarginSpinBox->value() );
         m_internalSettings->setButtonSpacing( m_ui.btnSpacingSpinBox->value() );
         m_internalSettings->setDrawBorderOnMaximizedWindows( m_ui.drawBorderOnMaximizedWindows->isChecked() );
         m_internalSettings->setDrawSizeGrip( m_ui.drawSizeGrip->isChecked() );
@@ -227,6 +230,7 @@ namespace Breeze
         // assign to ui
         m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
         m_ui.buttonSize->setCurrentIndex( m_internalSettings->buttonSize() );
+        m_ui.titleMarginSpinBox->setValue( m_internalSettings->extraTitleMargin() );
         m_ui.btnSpacingSpinBox->setValue( m_internalSettings->buttonSpacing() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
         m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
@@ -283,6 +287,7 @@ namespace Breeze
         if (m_ui.macOSButtons->isChecked() != m_internalSettings->macOSButtons()) modified = true;
         if( m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment() ) modified = true;
         else if( m_ui.buttonSize->currentIndex() != m_internalSettings->buttonSize() ) modified = true;
+        else if( m_ui.titleMarginSpinBox->value() != m_internalSettings->extraTitleMargin() ) modified = true;
         else if( m_ui.btnSpacingSpinBox->value() != m_internalSettings->buttonSpacing() ) modified = true;
         else if( m_ui.drawBorderOnMaximizedWindows->isChecked() !=  m_internalSettings->drawBorderOnMaximizedWindows() ) modified = true;
         else if( m_ui.drawSizeGrip->isChecked() !=  m_internalSettings->drawSizeGrip() ) modified = true;
