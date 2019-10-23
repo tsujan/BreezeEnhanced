@@ -66,6 +66,7 @@
     "org.kde.kdecoration2": {
         "blur": true,
         "defaultTheme": "BreezeEnhanced",
-        "kcmodule": true
+        "kcmodule": true,
+        "recommendedBorderSize": "None"
     }
 }
