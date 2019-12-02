@@ -69,7 +69,7 @@ namespace Breeze
         //! in Standalone mode the button is not using the decoration metrics but its geometry
         m_iconSize = QSize(-1, -1);
     }
-            
+
     //__________________________________________________________________
     Button *Button::create(DecorationButtonType type, KDecoration2::Decoration *decoration, QObject *parent)
     {
@@ -979,50 +979,65 @@ namespace Breeze
 
             }
         }
-        else { // as in Breeze
+        else {
             auto c = d->client().data();
             if( isPressed() ) {
 
                 if( type() == DecorationButtonType::Close ) return c->color( ColorGroup::Warning, ColorRole::Foreground );
-                else return KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
+                else
+                {
+                    QColor col;
+                    if (qGray(d->titleBarColor().rgb()) > 100)
+                        col = QColor(0, 0, 0, 190);
+                    else
+                        col = QColor(255, 255, 255, 210);
+                    return col;
+                }
 
             } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove ) && isChecked() ) {
 
-                return d->fontColor();
+                    QColor col;
+                    if (qGray(d->titleBarColor().rgb()) > 100)
+                        col = QColor(0, 0, 0, 165);
+                    else
+                        col = QColor(255, 255, 255, 180);
+                    return col;
 
             } else if( m_animation->state() == QPropertyAnimation::Running ) {
 
                 if( type() == DecorationButtonType::Close )
                 {
-                    /*if( d->internalSettings()->outlineCloseButton() )
-                    {
 
-                        return KColorUtils::mix( d->fontColor(), c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter(), m_opacity );
-
-                    } else {*/
-
-                        QColor color( c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter() );
-                        color.setAlpha( color.alpha()*m_opacity );
-                        return color;
-
-                    //}
+                    QColor color( c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter() );
+                    color.setAlpha( color.alpha()*m_opacity );
+                    return color;
 
                 } else {
 
-                    QColor color( d->fontColor() );
-                    color.setAlpha( color.alpha()*m_opacity );
-                    return color;
+                    QColor col;
+                    if (qGray(d->titleBarColor().rgb()) > 100)
+                        col = QColor(0, 0, 0, 165);
+                    else
+                        col = QColor(255, 255, 255, 180);
+                    col.setAlpha( col.alpha()*m_opacity );
+                    return col;
 
                 }
 
             } else if( isHovered() ) {
 
                 if( type() == DecorationButtonType::Close ) return c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter();
-                else return d->fontColor();
+                else
+                {
 
-            /*} else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
+                    QColor col;
+                    if (qGray(d->titleBarColor().rgb()) > 100)
+                        col = QColor(0, 0, 0, 165);
+                    else
+                        col = QColor(255, 255, 255, 180);
+                    return col;
 
-                return d->fontColor();*/
+                }
 
             } else {
 

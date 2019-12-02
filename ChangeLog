@@ -1,6 +1,7 @@
 V5.17
 ---------
  * Imported some of the changes in Breeze 5.17.1.
+ * Milder hover/press backgrounds for non-macOS buttons.
 
 V5.16
 ---------
