@@ -363,7 +363,7 @@ namespace Breeze
                         painter->setPen( pen );
                         painter->setBrush( Qt::NoBrush );
 
-                        painter->drawLine( QPointF( 5, 9 ), QPointF( 13, 9 ) );
+                        painter->drawLine( QPointF( 4, 9 ), QPointF( 14, 9 ) );
 
                         if (isHovered())
                             pen.setWidthF( 1.1*qMax((qreal)1.0, 20/width ) );
