@@ -22,7 +22,7 @@ Needless to say, the main work behind BreezeEnhanced is the Breeze KWin decorati
 
 ## Installation
 
-The version number in the file NEWS shows the main version of KWin that is required for the compilation. *Compilation should not be done against other versions of KWin!*.
+The version number in the file [NEWS](NEWS) shows the main version of KWin that is required for the compilation. *Compilation should not be done against other versions of KWin!*
 
 Open a terminal inside the source directory and do:
 ```sh
