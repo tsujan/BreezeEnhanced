@@ -16,9 +16,9 @@ Please note that BreezeEnhanced is not related to the Breeze widget style. In fa
 
 ## Credits:
 
-BreezeEnhanced was started from BreezeBlurred (https://github.com/alex47/BreezeBlurred), a former fork of Breeze with title-bar translucency and blurring.
+BreezeEnhanced was started from [BreezeBlurred](https://github.com/alex47/BreezeBlurred), a former fork of Breeze with title-bar translucency and blurring.
 
-Needless to say, the main work behind BreezeEnhanced is the Breeze KWin decoration itself, which can be downloaded from https://download.kde.org/stable/plasma/.
+Needless to say, the main work behind BreezeEnhanced is the Breeze KWin decoration itself, which can be downloaded from <https://download.kde.org/stable/plasma/>.
 
 ## Installation
 
