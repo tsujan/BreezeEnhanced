@@ -43,6 +43,13 @@ sudo zypper ar obs://home:trmdi trmdi
 sudo zypper in -r trmdi BreezeEnhanced
 ```
 
+Users of Ubuntu can do (thanks to krisives at GitHub):
+```sh
+sudo add-apt-repository ppa:krisives/breezeenhanced
+sudo apt-get update
+sudo apt install breezeenhanced
+```
+
 ## Screenshots:
 
 ![Settings](screenshots/Settings.png?raw=true "Settings")
