@@ -1,10 +1,6 @@
 ################# dependencies #################
-
 ### Qt/KDE
 find_package(Qt5 REQUIRED CONFIG COMPONENTS Widgets)
-
-################# configuration #################
-configure_file(config-breezecommon.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-breezecommon.h )
 
 ################# breezestyle target #################
 set(breezeenhancedcommon_LIB_SRCS

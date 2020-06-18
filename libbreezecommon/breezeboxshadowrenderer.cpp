@@ -21,12 +21,8 @@
 // own
 #include "breezeboxshadowrenderer.h"
 
-// auto-generated
-#include "config-breezecommon.h"
-
 // Qt
 #include <QPainter>
-
 #include <QtMath>
 
 namespace Breeze
