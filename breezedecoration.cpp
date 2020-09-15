@@ -193,7 +193,7 @@ namespace Breeze
 
         auto c = client().data();
         if( hideTitleBar() ) return c->color( ColorGroup::Inactive, ColorRole::TitleBar );
-        else if( m_animation->state() == QVariantAnimation::Running )
+        else if( m_animation->state() == QAbstractAnimation::Running )
         {
             return KColorUtils::mix(
                 c->color( ColorGroup::Inactive, ColorRole::TitleBar ),
@@ -209,7 +209,7 @@ namespace Breeze
 
         auto c( client().data() );
         if( !m_internalSettings->drawTitleBarSeparator() ) return QColor();
-        if( m_animation->state() == QVariantAnimation::Running )
+        if( m_animation->state() == QAbstractAnimation::Running )
         {
             QColor color( c->palette().color( QPalette::Highlight ) );
             color.setAlpha( color.alpha()*m_opacity );
@@ -223,7 +223,7 @@ namespace Breeze
     {
 
         auto c = client().data();
-        if( m_animation->state() == QVariantAnimation::Running )
+        if( m_animation->state() == QAbstractAnimation::Running )
         {
             return KColorUtils::mix(
                 c->color( ColorGroup::Inactive, ColorRole::Foreground ),
@@ -312,8 +312,8 @@ namespace Breeze
         {
 
             auto c = client().data();
-            m_animation->setDirection( c->isActive() ? QVariantAnimation::Forward : QVariantAnimation::Backward );
-            if( m_animation->state() != QVariantAnimation::Running ) m_animation->start();
+            m_animation->setDirection( c->isActive() ? QAbstractAnimation::Forward : QAbstractAnimation::Backward );
+            if( m_animation->state() != QAbstractAnimation::Running ) m_animation->start();
 
         } else {
 
