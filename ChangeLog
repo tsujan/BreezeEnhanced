@@ -1,3 +1,7 @@
+V5.20
+---------
+ * Bumped the version to 5.20 without any change (breeze-5.20.0 removed button animation settings but I kept them).
+
 V5.19
 ---------
  * Imported useful changes in Breeze 5.19.1.
