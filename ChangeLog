@@ -1,3 +1,7 @@
+V5.21
+---------
+ * Bumped the version to 5.21 without any change (breeze-5.21.0 added shadow animation but I didn't import it to save resources).
+
 V5.20
 ---------
  * Bumped the version to 5.20 without any change (breeze-5.20.0 removed button animation settings but I kept them).

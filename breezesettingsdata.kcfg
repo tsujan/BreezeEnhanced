@@ -107,7 +107,7 @@
         <default>100</default>
     </entry>
 
-    <!-- size grip -->
+    <!-- gradient -->
     <entry name="DrawBackgroundGradient" type = "Bool">
         <default>true</default>
     </entry>
