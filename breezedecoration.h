@@ -119,6 +119,8 @@ namespace Breeze
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
         void createShadow();
 
+        void setScaledCornerRadius();
+
         //*@name border size
         //@{
         int borderSize(bool bottom = false) const;
@@ -155,6 +157,8 @@ namespace Breeze
         //* active state change opacity
         qreal m_opacity = 0;
 
+        //*frame corner radius, scaled according to DPI
+        qreal m_scaledCornerRadius = 3;
     };
 
     bool Decoration::hasBorders() const

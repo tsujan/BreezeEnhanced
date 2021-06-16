@@ -15,11 +15,11 @@ generate_export_header(breezeenhancedcommon5
 
 target_link_libraries(breezeenhancedcommon5
     PUBLIC
-        Qt5::Core
-        Qt5::Gui)
+        Qt::Core
+        Qt::Gui)
 
 set_target_properties(breezeenhancedcommon5 PROPERTIES
     VERSION ${PROJECT_VERSION}
     SOVERSION ${PROJECT_VERSION_MAJOR})
 
-install(TARGETS breezeenhancedcommon5 ${INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY NAMELINK_SKIP)
+install(TARGETS breezeenhancedcommon5 ${KDE_INSTALL_TARGETS_DEFAULT_ARGS} LIBRARY NAMELINK_SKIP)

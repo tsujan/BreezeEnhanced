@@ -99,9 +99,9 @@ add_library(breezeenhanced MODULE
 
 target_link_libraries(breezeenhanced
     PUBLIC
-        Qt5::Core
-        Qt5::Gui
-        Qt5::DBus
+        Qt::Core
+        Qt::Gui
+        Qt::DBus
     PRIVATE
         breezeenhancedcommon5
         KDecoration2::KDecoration
@@ -116,12 +116,12 @@ target_link_libraries(breezeenhanced
 if(BREEZE_HAVE_X11)
   target_link_libraries(breezeenhanced
     PUBLIC
-      Qt5::X11Extras
+      Qt::X11Extras
       XCB::XCB)
 endif()
 
 
-install(TARGETS breezeenhanced DESTINATION ${PLUGIN_INSTALL_DIR}/org.kde.kdecoration2)
+install(TARGETS breezeenhanced DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
 install(FILES config/breezeenhancedconfig.desktop DESTINATION  ${SERVICES_INSTALL_DIR})
 # install(TARGETS breezedecoration DESTINATION ${PLUGIN_INSTALL_DIR}/org.kde.kdecoration2)
-# install(FILES config/breezedecorationconfig.desktop DESTINATION  ${SERVICES_INSTALL_DIR})
+# install(FILES config/breezedecorationconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})

@@ -374,6 +374,8 @@ namespace Breeze
 
         m_internalSettings = SettingsProvider::self()->internalSettings( this );
 
+        setScaledCornerRadius();
+
         // animation
         m_animation->setDuration( m_internalSettings->animationsDuration() );
 
@@ -414,7 +416,7 @@ namespace Breeze
             top += baseSize*Metrics::TitleBar_BottomMargin + 1;
 
             // padding above
-            top += baseSize*TitleBar_TopMargin;
+            top += baseSize*Metrics::TitleBar_TopMargin;
 
         }
 
@@ -539,7 +541,7 @@ namespace Breeze
             // clip away the top part
             if( !hideTitleBar() ) painter->setClipRect(0, borderTop(), size().width(), size().height() - borderTop(), Qt::IntersectClip);
 
-            if( s->isAlphaChannelSupported() ) painter->drawRoundedRect(rect(), Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
+            if( s->isAlphaChannelSupported() ) painter->drawRoundedRect(rect(), m_scaledCornerRadius, m_scaledCornerRadius);
             else painter->drawRect( rect() );
 
             painter->restore();
@@ -613,7 +615,7 @@ namespace Breeze
 
         } else if( c->isShaded() ) {
 
-            painter->drawRoundedRect(titleRect, Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
+            painter->drawRoundedRect(titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
 
         } else {
 
@@ -621,11 +623,11 @@ namespace Breeze
 
             // the rect is made a little bit larger to be able to clip away the rounded corners at the bottom and sides
             painter->drawRoundedRect(titleRect.adjusted(
-                isLeftEdge() ? -Metrics::Frame_FrameRadius:0,
-                isTopEdge() ? -Metrics::Frame_FrameRadius:0,
-                isRightEdge() ? Metrics::Frame_FrameRadius:0,
-                Metrics::Frame_FrameRadius),
-                Metrics::Frame_FrameRadius, Metrics::Frame_FrameRadius);
+                isLeftEdge() ? -m_scaledCornerRadius:0,
+                isTopEdge() ? -m_scaledCornerRadius:0,
+                isRightEdge() ? m_scaledCornerRadius:0,
+                m_scaledCornerRadius),
+                m_scaledCornerRadius, m_scaledCornerRadius);
 
         }
 
@@ -763,7 +765,7 @@ namespace Breeze
                 .expandedTo(BoxShadowRenderer::calculateMinimumBoxSize(params.shadow2.radius));
 
             BoxShadowRenderer shadowRenderer;
-            shadowRenderer.setBorderRadius(Metrics::Frame_FrameRadius + 0.5);
+            shadowRenderer.setBorderRadius(m_scaledCornerRadius + 0.5);
             shadowRenderer.setBoxSize(boxSize);
             shadowRenderer.setDevicePixelRatio(1.0); // TODO: Create HiDPI shadows?
 
@@ -796,8 +798,8 @@ namespace Breeze
             painter.setCompositionMode(QPainter::CompositionMode_DestinationOut);
             painter.drawRoundedRect(
                 innerRect,
-                Metrics::Frame_FrameRadius + 0.5,
-                Metrics::Frame_FrameRadius + 0.5);
+                m_scaledCornerRadius + 0.5,
+                m_scaledCornerRadius + 0.5);
 
             // Draw outline.
             painter.setPen(withOpacity(g_shadowColor, 0.2 * strength));
@@ -805,8 +807,8 @@ namespace Breeze
             painter.setCompositionMode(QPainter::CompositionMode_SourceOver);
             painter.drawRoundedRect(
                 innerRect,
-                Metrics::Frame_FrameRadius - 0.5,
-                Metrics::Frame_FrameRadius - 0.5);
+                m_scaledCornerRadius - 0.5,
+                m_scaledCornerRadius - 0.5);
 
             painter.end();
 
@@ -852,6 +854,12 @@ namespace Breeze
             m_sizeGrip->deleteLater();
             m_sizeGrip = nullptr;
         }
+    }
+
+    void Decoration::setScaledCornerRadius()
+    {
+        m_scaledCornerRadius = Metrics::Frame_FrameRadius*settings()->smallSpacing();
+
     }
 
 } // namespace
