@@ -5,10 +5,8 @@ Type=Service
 X-KDE-ServiceTypes=KCModule
 
 X-KDE-Library=org.kde.kdecoration2/breezeenhanced
-X-KDE-PluginKeyword=kcmodule
 X-KDE-ParentApp=kcontrol
 X-KDE-Weight=60
-X-KDE-PluginInfo-Name=BreezeEnhanced
 
 Name=BreezeEnhanced
 Comment=Modify the appearance of window decorations

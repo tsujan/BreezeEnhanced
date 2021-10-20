@@ -3,7 +3,7 @@ project(breezeenhanced)
 set(PROJECT_VERSION "0.1")
 set(PROJECT_VERSION_MAJOR 0)
 
-cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
 include(WriteBasicConfigVersionFile)
 include(FeatureSummary)
@@ -13,6 +13,9 @@ find_package(ECM 0.0.9 REQUIRED NO_MODULE)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_SOURCE_DIR}/cmake)
+
+set(QT_MIN_VERSION "5.15.0")
+set(KF5_MIN_VERSION "5.82")
 
 include(ECMInstallIcons)
 include(KDEInstallDirs)
@@ -29,8 +32,8 @@ add_definitions(-DTRANSLATION_DOMAIN="breeze_kwin_deco")
 
 
 #find_package(KF5 REQUIRED COMPONENTS CoreAddons GuiAddons ConfigWidgets WindowSystem I18n IconThemes)
-find_package(KF5 REQUIRED COMPONENTS CoreAddons GuiAddons ConfigWidgets WindowSystem I18n)
-find_package(Qt5 CONFIG REQUIRED COMPONENTS DBus)
+find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS CoreAddons GuiAddons ConfigWidgets WindowSystem I18n)
+find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS DBus)
 
 ### XCB
 find_package(XCB COMPONENTS XCB)
@@ -122,6 +125,6 @@ endif()
 
 
 install(TARGETS breezeenhanced DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
-install(FILES config/breezeenhancedconfig.desktop DESTINATION  ${SERVICES_INSTALL_DIR})
+install(FILES config/breezeenhancedconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
 # install(TARGETS breezedecoration DESTINATION ${PLUGIN_INSTALL_DIR}/org.kde.kdecoration2)
 # install(FILES config/breezedecorationconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
