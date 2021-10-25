@@ -1,6 +1,7 @@
 V5.23
 ---------
  * Bumped the version to 5.23 and imported some changes from breeze-5.23.1.
+ * Imported https://invent.kde.org/plasma/breeze/-/commit/f2b81df6522b611bdf8e2fde7947bde82c35147e
 
 V5.22
 ---------
