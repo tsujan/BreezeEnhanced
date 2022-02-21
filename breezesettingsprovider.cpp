@@ -24,6 +24,7 @@
 
 #include <KWindowInfo>
 
+#include <QRegularExpression>
 #include <QTextStream>
 
 namespace Breeze
@@ -75,7 +76,7 @@ namespace Breeze
         QString className;
 
         // get the client
-        auto client = decoration->client().data();
+        const auto client = decoration->client().toStrongRef();
 
         foreach( auto internalSettings, m_exceptions )
         {
@@ -114,7 +115,7 @@ namespace Breeze
                     if( className.isEmpty() )
                     {
                         // retrieve class name
-                        KWindowInfo info( client->windowId(), nullptr, NET::WM2WindowClass );
+                        KWindowInfo info( client->windowId(), {}, NET::WM2WindowClass );
                         QString window_className( QString::fromUtf8(info.windowClassName()) );
                         QString window_class( QString::fromUtf8(info.windowClassClass()) );
                         className = window_className + QStringLiteral(" ") + window_class;
@@ -127,7 +128,8 @@ namespace Breeze
             }
 
             // check matching
-            if( QRegExp( internalSettings->exceptionPattern() ).indexIn( value ) >= 0 )
+            QRegularExpression rx( internalSettings->exceptionPattern() );
+            if( rx.match( value ).hasMatch() )
             { return internalSettings; }
 
         }

@@ -1,3 +1,7 @@
+V5.24
+---------
+ * Bumped the version to 5.24 and silenced compilation warnings.
+
 V5.23
 ---------
  * Bumped the version to 5.23 and imported some changes from breeze-5.23.1.
