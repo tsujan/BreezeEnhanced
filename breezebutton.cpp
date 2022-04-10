@@ -209,6 +209,14 @@ namespace Breeze
             inactiveCol = QColor(gray, gray, gray);
         }
 
+        QColor outlineCol(Qt::gray);
+        if (qGray(d->titleBarColor().rgb()) > 127)
+            outlineCol = QColor(0, 0, 0, 45);
+        else
+            outlineCol = QColor(0, 0, 0, 255 - 2 * qGray(d->titleBarColor().rgb()));
+            // outlineCol = QColor(255, 255, 255, 127);
+    
+
         // render mark
         const QColor foregroundColor( this->foregroundColor(inactiveCol) );
         if( foregroundColor.isValid() )
@@ -219,6 +227,11 @@ namespace Breeze
             pen.setCapStyle( Qt::RoundCap );
             pen.setJoinStyle( Qt::MiterJoin );
             pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
+
+            QPen outline_pen( outlineCol );
+            outline_pen.setCapStyle( Qt::RoundCap );
+            outline_pen.setJoinStyle( Qt::MiterJoin );
+            outline_pen.setWidthF( 1.0 );
 
             switch( type() )
             {
@@ -243,7 +256,12 @@ namespace Breeze
                         }
                         painter->setBrush( QBrush(grad) );
                         painter->setPen( Qt::NoPen );
-                        painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
+                        painter->drawEllipse( QRectF( 2, 2, 14, 14 )  );
+
+                        painter->setPen( outline_pen );
+                        painter->setBrush( Qt::NoBrush );
+                        painter->drawEllipse( QRectF( 2, 2, 14, 14 )  );
+
                         if( backgroundColor.isValid() )
                         {
                             painter->setPen( Qt::NoPen );
@@ -253,7 +271,13 @@ namespace Breeze
                                          : static_cast<qreal>(2) * m_animation->currentValue().toReal());
                             QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
                             painter->drawEllipse( c, r, r );
+
+                            painter->setPen( outline_pen );
+                            painter->setBrush( Qt::NoBrush );
+                            painter->drawEllipse( c, r, r  );
                         }
+
+
                     }
                     else {
                         if( backgroundColor.isValid() )
@@ -300,6 +324,11 @@ namespace Breeze
                         painter->setBrush( QBrush(grad) );
                         painter->setPen( Qt::NoPen );
                         painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
+
+                        painter->setPen( outline_pen );
+                        painter->setBrush( Qt::NoBrush );
+                        painter->drawEllipse( QRectF( 2, 2, 14, 14 )  );
+
                         if( backgroundColor.isValid() )
                         {
                             painter->setPen( Qt::NoPen );
@@ -309,6 +338,10 @@ namespace Breeze
                                          : static_cast<qreal>(2) * m_animation->currentValue().toReal());
                             QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
                             painter->drawEllipse( c, r, r );
+
+                            painter->setPen( outline_pen );
+                            painter->setBrush( Qt::NoBrush );
+                            painter->drawEllipse( c, r, r  );
                         }
                     }
                     else {
@@ -360,6 +393,11 @@ namespace Breeze
                         painter->setBrush( QBrush(grad) );
                         painter->setPen( Qt::NoPen );
                         painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
+
+                        painter->setPen( outline_pen );
+                        painter->setBrush( Qt::NoBrush );
+                        painter->drawEllipse( QRectF( 2, 2, 14, 14 )  );
+
                         if( backgroundColor.isValid() )
                         {
                             painter->setPen( Qt::NoPen );
@@ -369,6 +407,10 @@ namespace Breeze
                                          : static_cast<qreal>(2) * m_animation->currentValue().toReal());
                             QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
                             painter->drawEllipse( c, r, r );
+
+                            painter->setPen( outline_pen );
+                            painter->setBrush( Qt::NoBrush );
+                            painter->drawEllipse( c, r, r  );
                         }
                     }
                     else {
@@ -417,6 +459,11 @@ namespace Breeze
                             painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
                         else {
                             painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
+
+                            painter->setPen( outline_pen );
+                            painter->setBrush( Qt::NoBrush );
+                            painter->drawEllipse( QRectF( 2, 2, 14, 14 )  );
+
                             if( backgroundColor.isValid() )
                             {
                                 painter->setPen( Qt::NoPen );
@@ -425,6 +472,10 @@ namespace Breeze
                                           + static_cast<qreal>(2) * m_animation->currentValue().toReal();
                                 QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
                                 painter->drawEllipse( c, r, r );
+
+                                painter->setPen( outline_pen );
+                                painter->setBrush( Qt::NoBrush );
+                                painter->drawEllipse( c, r, r  );
                             }
                         }
                     }
@@ -497,6 +548,11 @@ namespace Breeze
                             painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
                         else {
                             painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
+
+                            painter->setPen( outline_pen );
+                            painter->setBrush( Qt::NoBrush );
+                            painter->drawEllipse( QRectF( 2, 2, 14, 14 )  );
+
                             if( backgroundColor.isValid() )
                             {
                                 painter->setPen( Qt::NoPen );
@@ -505,6 +561,10 @@ namespace Breeze
                                           + static_cast<qreal>(2) * m_animation->currentValue().toReal();
                                 QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
                                 painter->drawEllipse( c, r, r );
+
+                                painter->setPen( outline_pen );
+                                painter->setBrush( Qt::NoBrush );
+                                painter->drawEllipse( c, r, r  );
                             }
                         }
                     }
@@ -562,6 +622,11 @@ namespace Breeze
                             painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
                         else {
                             painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
+
+                            painter->setPen( outline_pen );
+                            painter->setBrush( Qt::NoBrush );
+                            painter->drawEllipse( QRectF( 2, 2, 14, 14 )  );
+
                             if( backgroundColor.isValid() )
                             {
                                 painter->setPen( Qt::NoPen );
@@ -570,6 +635,10 @@ namespace Breeze
                                           + static_cast<qreal>(2) * m_animation->currentValue().toReal();
                                 QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
                                 painter->drawEllipse( c, r, r );
+
+                                painter->setPen( outline_pen );
+                                painter->setBrush( Qt::NoBrush );
+                                painter->drawEllipse( c, r, r  );
                             }
                         }
                     }
@@ -635,6 +704,11 @@ namespace Breeze
                             painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
                         else {
                             painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
+
+                            painter->setPen( outline_pen );
+                            painter->setBrush( Qt::NoBrush );
+                            painter->drawEllipse( QRectF( 2, 2, 14, 14 )  );
+
                             if( backgroundColor.isValid() )
                             {
                                 painter->setPen( Qt::NoPen );
@@ -643,6 +717,10 @@ namespace Breeze
                                           + static_cast<qreal>(2) * m_animation->currentValue().toReal();
                                 QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
                                 painter->drawEllipse( c, r, r );
+
+                                painter->setPen( outline_pen );
+                                painter->setBrush( Qt::NoBrush );
+                                painter->drawEllipse( c, r, r  );
                             }
                         }
                     }
@@ -705,6 +783,11 @@ namespace Breeze
                         painter->setBrush( QBrush(grad) );
                         painter->setPen( Qt::NoPen );
                         painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
+
+                        painter->setPen( outline_pen );
+                        painter->setBrush( Qt::NoBrush );
+                        painter->drawEllipse( QRectF( 2, 2, 14, 14 )  );
+
                         if( backgroundColor.isValid() )
                         {
                             painter->setPen( Qt::NoPen );
@@ -713,6 +796,10 @@ namespace Breeze
                                       + static_cast<qreal>(2) * m_animation->currentValue().toReal();
                             QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
                             painter->drawEllipse( c, r, r );
+
+                            painter->setPen( outline_pen );
+                            painter->setBrush( Qt::NoBrush );
+                            painter->drawEllipse( c, r, r  );
                         }
                     }
                     if (!macOSBtn || isPressed() || isHovered()) {
@@ -761,6 +848,11 @@ namespace Breeze
                         painter->setBrush( QBrush(grad) );
                         painter->setPen( Qt::NoPen );
                         painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
+
+                        painter->setPen( outline_pen );
+                        painter->setBrush( Qt::NoBrush );
+                        painter->drawEllipse( QRectF( 2, 2, 14, 14 )  );
+
                         if( backgroundColor.isValid() )
                         {
                             painter->setPen( Qt::NoPen );
@@ -769,6 +861,10 @@ namespace Breeze
                                       + static_cast<qreal>(2) * m_animation->currentValue().toReal();
                             QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
                             painter->drawEllipse( c, r, r );
+
+                            painter->setPen( outline_pen );
+                            painter->setBrush( Qt::NoBrush );
+                            painter->drawEllipse( c, r, r  );
                         }
                     }
                     if (!macOSBtn || isPressed() || isHovered()) {
