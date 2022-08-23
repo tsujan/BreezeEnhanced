@@ -1,6 +1,6 @@
 ################# dependencies #################
 ### Qt/KDE
-find_package(Qt5 REQUIRED CONFIG COMPONENTS Widgets)
+find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} REQUIRED CONFIG COMPONENTS Widgets)
 
 ################# breezestyle target #################
 set(breezeenhancedcommon_LIB_SRCS

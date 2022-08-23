@@ -24,6 +24,8 @@ Needless to say, the main work behind BreezeEnhanced is the Breeze KWin decorati
 
 The version number in the file [NEWS](NEWS) shows the main version of KWin that is required for the compilation. *Compilation should not be done against other versions of KWin!*
 
+In what follows, it is supposed that the name of the installation directory of KDE libraries is `lib` and the installation prefix is `/usr`. If they are different in your distro, please replace them!
+
 Open a terminal inside the source directory and do:
 ```sh
 mkdir build && cd build

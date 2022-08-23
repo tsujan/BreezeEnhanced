@@ -31,6 +31,7 @@
 
 #include <QPalette>
 #include <QVariant>
+#include <QVariantAnimation>
 
 class QVariantAnimation;
 
@@ -103,6 +104,7 @@ namespace Breeze
         private Q_SLOTS:
         void reconfigure();
         void recalculateBorders();
+        void resetBlurRegion();
         void updateButtonsGeometry();
         void updateButtonsGeometryDelayed();
         void updateTitleBar();

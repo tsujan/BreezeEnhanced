@@ -87,6 +87,7 @@ namespace Breeze
     InternalSettingsList ExceptionListWidget::exceptions()
     {
         return model().get();
+        setChanged( false );
     }
 
     //__________________________________________________________

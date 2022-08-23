@@ -15,7 +15,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_SOURCE_DIR}/cmake)
 
 set(QT_MIN_VERSION "5.15.0")
-set(KF5_MIN_VERSION "5.82")
+set(KF5_MIN_VERSION "5.90")
 
 include(ECMInstallIcons)
 include(KDEInstallDirs)
@@ -33,7 +33,7 @@ add_definitions(-DTRANSLATION_DOMAIN="breeze_kwin_deco")
 
 #find_package(KF5 REQUIRED COMPONENTS CoreAddons GuiAddons ConfigWidgets WindowSystem I18n IconThemes)
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS CoreAddons GuiAddons ConfigWidgets WindowSystem I18n)
-find_package(Qt5 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS DBus)
+find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS DBus)
 
 ### XCB
 find_package(XCB COMPONENTS XCB)
@@ -47,7 +47,7 @@ set_package_properties(XCB PROPERTIES
 if(UNIX AND NOT APPLE)
 
   set(BREEZE_HAVE_X11 ${XCB_XCB_FOUND})
-  if (XCB_XCB_FOUND)
+  if (XCB_XCB_FOUND AND TARGET Qt5::Core)
     find_package(Qt5 REQUIRED CONFIG COMPONENTS X11Extras)
   endif()
 
@@ -117,14 +117,16 @@ target_link_libraries(breezeenhanced
         KF5::WindowSystem)
 
 if(BREEZE_HAVE_X11)
-  target_link_libraries(breezeenhanced
-    PUBLIC
-      Qt::X11Extras
-      XCB::XCB)
+  target_link_libraries(breezeenhanced PUBLIC XCB::XCB)
+  if (TARGET Qt5::X11Extras)
+    target_link_libraries(breezeenhanced PUBLIC Qt5::X11Extras)
+  else ()
+    target_link_libraries(breezeenhanced PUBLIC Qt6::GuiPrivate)
+  endif()
 endif()
 
 
 install(TARGETS breezeenhanced DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
-install(FILES config/breezeenhancedconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
-# install(TARGETS breezedecoration DESTINATION ${PLUGIN_INSTALL_DIR}/org.kde.kdecoration2)
-# install(FILES config/breezedecorationconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICES5DIR})
+install(FILES config/breezeenhancedconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICESDIR})
+#install(TARGETS breezedecoration DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
+#install(FILES config/breezedecorationconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICESDIR})

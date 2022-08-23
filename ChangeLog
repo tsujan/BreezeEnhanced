@@ -1,3 +1,7 @@
+V5.25
+---------
+ * Enabled the new decoration blurring of KWin (without "blur glitches").
+
 V5.24
 ---------
  * Bumped the version to 5.24 and silenced compilation warnings.
