@@ -118,7 +118,7 @@ namespace Breeze
         dialog->setException( exception );
 
         // run dialog and check existence
-        if( !dialog->exec() )
+        if (!dialog->exec())
         {
             delete dialog;
             return;
@@ -128,7 +128,8 @@ namespace Breeze
         delete dialog;
 
         // check exceptions
-        if( !checkException( exception ) ) return;
+        if (!checkException(exception))
+            return;
 
         // create new item
         model().add( exception );
@@ -152,34 +153,36 @@ namespace Breeze
 
         // retrieve selection
         QModelIndex current( m_ui.exceptionListView->selectionModel()->currentIndex() );
-        if( ! model().contains( current ) ) return;
+        if(!model().contains(current))
+            return;
 
-        InternalSettingsPtr exception( model().get( current ) );
+        InternalSettingsPtr exception(model().get(current));
 
         // create dialog
-        QPointer<ExceptionDialog> dialog( new ExceptionDialog( this ) );
-        dialog->setWindowTitle( i18n( "Edit Exception - Breeze Settings" ) );
-        dialog->setException( exception );
+        QPointer<ExceptionDialog> dialog(new ExceptionDialog(this));
+        dialog->setWindowTitle( i18n("Edit Exception - Breeze Settings"));
+        dialog->setException(exception);
 
         // map dialog
-        if( !dialog->exec() )
+        if (!dialog->exec())
         {
             delete dialog;
             return;
         }
 
         // check modifications
-        if( !dialog->isChanged() ) return;
+        if(!dialog->isChanged())
+            return;
 
         // retrieve exception
         dialog->save();
         delete dialog;
 
         // check new exception validity
-        checkException( exception );
+        checkException(exception);
         resizeColumns();
 
-        setChanged( true );
+        setChanged(true);
 
     }
 
@@ -189,18 +192,19 @@ namespace Breeze
 
         // confirmation dialog
         {
-            QMessageBox messageBox( QMessageBox::Question, i18n("Question - Breeze Settings" ), i18n("Remove selected exception?"), QMessageBox::Yes | QMessageBox::Cancel );
-            messageBox.button( QMessageBox::Yes )->setText( i18n("Remove") );
-            messageBox.setDefaultButton( QMessageBox::Cancel );
-            if( messageBox.exec() == QMessageBox::Cancel ) return;
+            QMessageBox messageBox(QMessageBox::Question, i18n("Question - Breeze Settings" ), i18n("Remove selected exception?"), QMessageBox::Yes | QMessageBox::Cancel);
+            messageBox.button(QMessageBox::Yes)->setText(i18n("Remove"));
+            messageBox.setDefaultButton(QMessageBox::Cancel);
+            if (messageBox.exec() == QMessageBox::Cancel)
+                return;
         }
 
         // remove
-        model().remove( model().get( m_ui.exceptionListView->selectionModel()->selectedRows() ) );
+        model().remove(model().get(m_ui.exceptionListView->selectionModel()->selectedRows()));
         resizeColumns();
         updateButtons();
 
-        setChanged( true );
+        setChanged(true);
 
     }
 
@@ -208,13 +212,15 @@ namespace Breeze
     void ExceptionListWidget::toggle( const QModelIndex& index )
     {
 
-        if( !model().contains( index ) ) return;
-        if( index.column() != ExceptionModel::ColumnEnabled ) return;
+        if (!model().contains(index))
+            return;
+        if (index.column() != ExceptionModel::ColumnEnabled)
+            return;
 
         // get matching exception
-        InternalSettingsPtr exception( model().get( index ) );
-        exception->setEnabled( !exception->enabled() );
-        setChanged( true );
+        InternalSettingsPtr exception(model().get(index));
+        exception->setEnabled(!exception->enabled());
+        setChanged(true);
 
     }
 
@@ -222,8 +228,9 @@ namespace Breeze
     void ExceptionListWidget::up()
     {
 
-        InternalSettingsList selection( model().get( m_ui.exceptionListView->selectionModel()->selectedRows() ) );
-        if( selection.empty() ) { return; }
+        InternalSettingsList selection(model().get(m_ui.exceptionListView->selectionModel()->selectedRows()));
+        if(selection.empty())
+            return;
 
         // retrieve selected indexes in list and store in model
         QModelIndexList selectedIndices( m_ui.exceptionListView->selectionModel()->selectedRows() );
@@ -251,14 +258,14 @@ namespace Breeze
 
         }
 
-        model().set( newExceptions );
+        model().set(newExceptions);
 
         // restore selection
         m_ui.exceptionListView->selectionModel()->select( model().index( selectedExceptions.front() ),  QItemSelectionModel::Clear|QItemSelectionModel::Select|QItemSelectionModel::Rows );
         for( InternalSettingsList::const_iterator iter = selectedExceptions.constBegin(); iter != selectedExceptions.constEnd(); ++iter )
         { m_ui.exceptionListView->selectionModel()->select( model().index( *iter ), QItemSelectionModel::Select|QItemSelectionModel::Rows ); }
 
-        setChanged( true );
+        setChanged(true);
 
     }
 

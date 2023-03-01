@@ -73,7 +73,7 @@ namespace Breeze
     {
 
         QString windowTitle;
-        QString className;
+        QString windowClass;
 
         // get the client
         const auto client = decoration->client().toStrongRef();
@@ -110,18 +110,8 @@ namespace Breeze
                 }
 
                 default:
-                case InternalSettings::ExceptionWindowClassName:
-                {
-                    if( className.isEmpty() )
-                    {
-                        // retrieve class name
-                        KWindowInfo info( client->windowId(), {}, NET::WM2WindowClass );
-                        QString window_className( QString::fromUtf8(info.windowClassName()) );
-                        QString window_class( QString::fromUtf8(info.windowClassClass()) );
-                        className = window_className + QStringLiteral(" ") + window_class;
-                    }
-
-                    value = className;
+                case InternalSettings::ExceptionWindowClassName: {
+                    value = windowClass.isEmpty() ? (windowClass = client->windowClass()) : windowClass;
                     break;
                 }
 

@@ -1,7 +1,7 @@
 
 project(breezeenhanced)
-set(PROJECT_VERSION "0.1")
-set(PROJECT_VERSION_MAJOR 0)
+set(PROJECT_VERSION "5.27.0")
+set(PROJECT_VERSION_MAJOR 5)
 
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
@@ -15,7 +15,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_SOURCE_DIR}/cmake)
 
 set(QT_MIN_VERSION "5.15.0")
-set(KF5_MIN_VERSION "5.90")
+set(KF5_MIN_VERSION "5.102.0")
 
 include(ECMInstallIcons)
 include(KDEInstallDirs)
@@ -31,34 +31,8 @@ find_package(KDecoration2 REQUIRED)
 add_definitions(-DTRANSLATION_DOMAIN="breeze_kwin_deco")
 
 
-#find_package(KF5 REQUIRED COMPONENTS CoreAddons GuiAddons ConfigWidgets WindowSystem I18n IconThemes)
 find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS CoreAddons GuiAddons ConfigWidgets WindowSystem I18n)
 find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS DBus)
-
-### XCB
-find_package(XCB COMPONENTS XCB)
-set_package_properties(XCB PROPERTIES
-  DESCRIPTION "X protocol C-language Binding"
-  URL "https://xcb.freedesktop.org"
-  TYPE OPTIONAL
-  PURPOSE "Required to pass style properties to native Windows on X11 Platform"
-)
-
-if(UNIX AND NOT APPLE)
-
-  set(BREEZE_HAVE_X11 ${XCB_XCB_FOUND})
-  if (XCB_XCB_FOUND AND TARGET Qt5::Core)
-    find_package(Qt5 REQUIRED CONFIG COMPONENTS X11Extras)
-  endif()
-
-else()
-
-  set(BREEZE_HAVE_X11 FALSE)
-
-endif()
-
-################# configuration #################
-configure_file(config-breeze.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-breeze.h )
 
 ################# includes #################
 add_subdirectory(libbreezecommon)
@@ -69,8 +43,7 @@ set(breezeenhanced_SRCS
     breezebutton.cpp
     breezedecoration.cpp
     breezeexceptionlist.cpp
-    breezesettingsprovider.cpp
-    breezesizegrip.cpp)
+    breezesettingsprovider.cpp)
 
 kconfig_add_kcfg_files(breezeenhanced_SRCS breezesettings.kcfgc)
 
@@ -87,7 +60,6 @@ set(breezeenhanced_config_SRCS
 
 set(breezeenhanced_config_PART_FORMS
    config/ui/breezeconfigurationui.ui
-   config/ui/breezedetectwidget.ui
    config/ui/breezeexceptiondialog.ui
    config/ui/breezeexceptionlistwidget.ui
 )
@@ -113,20 +85,7 @@ target_link_libraries(breezeenhanced
         KF5::ConfigWidgets
         KF5::GuiAddons
         KF5::I18n
-#        KF5::IconThemes
         KF5::WindowSystem)
-
-if(BREEZE_HAVE_X11)
-  target_link_libraries(breezeenhanced PUBLIC XCB::XCB)
-  if (TARGET Qt5::X11Extras)
-    target_link_libraries(breezeenhanced PUBLIC Qt5::X11Extras)
-  else ()
-    target_link_libraries(breezeenhanced PUBLIC Qt6::GuiPrivate)
-  endif()
-endif()
-
 
 install(TARGETS breezeenhanced DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
 install(FILES config/breezeenhancedconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICESDIR})
-#install(TARGETS breezedecoration DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
-#install(FILES config/breezedecorationconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICESDIR})

@@ -33,8 +33,6 @@
 #include <QVariant>
 #include <QVariantAnimation>
 
-class QVariantAnimation;
-
 namespace KDecoration2
 {
     class DecorationButton;
@@ -43,7 +41,6 @@ namespace KDecoration2
 
 namespace Breeze
 {
-    class SizeGrip;
     class Decoration : public KDecoration2::Decoration
     {
         Q_OBJECT
@@ -109,7 +106,6 @@ namespace Breeze
         void updateButtonsGeometryDelayed();
         void updateTitleBar();
         void updateAnimationState();
-        void updateSizeGripVisibility();
 
         private:
 
@@ -137,20 +133,9 @@ namespace Breeze
         inline int titleBarAlpha() const;
         //@}
 
-        //*@name size grip
-        //@{
-        void createSizeGrip();
-        void deleteSizeGrip();
-        SizeGrip* sizeGrip() const
-        { return m_sizeGrip; }
-        //@}
-
         InternalSettingsPtr m_internalSettings;
         KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;
         KDecoration2::DecorationButtonGroup *m_rightButtons = nullptr;
-
-        //* size grip widget
-        SizeGrip *m_sizeGrip = nullptr;
 
         //* active state change animation
         QVariantAnimation *m_animation;

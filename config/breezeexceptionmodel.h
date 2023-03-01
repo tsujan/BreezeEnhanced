@@ -25,9 +25,9 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
+#include "breeze.h"
 #include "breezelistmodel.h"
 #include "breezesettings.h"
-#include "breeze.h"
 
 namespace Breeze
 {

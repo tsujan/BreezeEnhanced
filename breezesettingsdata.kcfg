@@ -114,11 +114,6 @@
 
     <entry name="TitleBarFont" type = "String"/>
 
-    <!-- size grip -->
-    <entry name="DrawSizeGrip" type = "Bool">
-      <default>false</default>
-    </entry>
-
     <!-- animations -->
     <entry name="AnimationsEnabled" type = "Bool">
        <default>true</default>

@@ -222,20 +222,13 @@
         </widget>
        </item>
        <item row="7" column="0" colspan="3">
-        <widget class="QCheckBox" name="drawSizeGrip">
-         <property name="text">
-          <string>Add handle to resize windows with no border</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="0" colspan="3">
         <widget class="QCheckBox" name="macOSButtons">
          <property name="text">
           <string>macOS-like buttons</string>
          </property>
         </widget>
        </item>
-       <item row="9" column="0" colspan="3">
+       <item row="8" column="0" colspan="3">
         <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0,1">
          <item row="0" column="0">
           <widget class="QLabel" name="label_6">
@@ -375,7 +368,7 @@
          </item>
         </layout>
        </item>
-       <item row="10" column="0" colspan="3">
+       <item row="9" column="0" colspan="3">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>

@@ -25,15 +25,6 @@
 
 #include "breezeexceptiondialog.h"
 #include "breezedetectwidget.h"
-#include "config-breeze.h"
-
-#if BREEZE_HAVE_X11
-#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
-#include <private/qtx11extras_p.h>
-#else
-#include <QX11Info>
-#endif
-#endif
 
 namespace Breeze
 {
@@ -45,13 +36,13 @@ namespace Breeze
 
         m_ui.setupUi( this );
 
-        connect( m_ui.buttonBox->button( QDialogButtonBox::Cancel ), &QAbstractButton::clicked, this, &QWidget::close );
+        connect( m_ui.buttonBox->button(QDialogButtonBox::Cancel), &QAbstractButton::clicked, this, &QWidget::close);
 
         // store checkboxes from ui into list
         m_checkboxes.insert( BorderSize, m_ui.borderSizeCheckBox );
 
         // detect window properties
-        connect( m_ui.detectDialogButton, &QAbstractButton::clicked, this, &ExceptionDialog::selectWindowProperties );
+        connect(m_ui.detectDialogButton, &QAbstractButton::clicked, this, &ExceptionDialog::selectWindowProperties);
 
         // connections
         connect( m_ui.exceptionType, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
@@ -67,13 +58,6 @@ namespace Breeze
         connect( m_ui.opacityOverrideLabelSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
         connect( m_ui.flatTitleBar, SIGNAL(clicked()), SLOT(updateChanged()) );
         connect( m_ui.isDialog, SIGNAL(clicked()), SLOT(updateChanged()) );
-
-        // hide detection dialog on non X11 platforms
-        #if BREEZE_HAVE_X11
-        if( !QX11Info::isPlatformX11() ) m_ui.detectDialogButton->hide();
-        #else
-        m_ui.detectDialogButton->hide();
-        #endif
     }
 
     //___________________________________________
@@ -115,8 +99,10 @@ namespace Breeze
 
         // mask
         unsigned int mask = None;
-        for( CheckBoxMap::iterator iter = m_checkboxes.begin(); iter != m_checkboxes.end(); ++iter )
-        { if( iter.value()->isChecked() ) mask |= iter.key(); }
+        for (CheckBoxMap::iterator iter = m_checkboxes.begin(); iter != m_checkboxes.end(); ++iter) {
+            if (iter.value()->isChecked())
+                mask |= iter.key();
+        }
 
         m_exception->setMask( mask );
 
@@ -128,14 +114,22 @@ namespace Breeze
     void ExceptionDialog::updateChanged()
     {
         bool modified( false );
-        if( m_exception->exceptionType() != m_ui.exceptionType->currentIndex() ) modified = true;
-        else if( m_exception->exceptionPattern() != m_ui.exceptionEditor->text() ) modified = true;
-        else if( m_exception->borderSize() != m_ui.borderSizeComboBox->currentIndex() ) modified = true;
-        else if( m_exception->hideTitleBar() != m_ui.hideTitleBar->isChecked() ) modified = true;
-        else if( m_exception->opaqueTitleBar() != m_ui.opaqueTitleBar->isChecked() ) modified = true;
-        else if( m_exception->opacityOverride() != m_ui.opacityOverrideLabelSpinBox->value() ) modified = true;
-        else if( m_exception->flatTitleBar() != m_ui.flatTitleBar->isChecked() ) modified = true;
-        else if( m_exception->isDialog() != m_ui.isDialog->isChecked() ) modified = true;
+        if (m_exception->exceptionType() != m_ui.exceptionType->currentIndex())
+            modified = true;
+        else if (m_exception->exceptionPattern() != m_ui.exceptionEditor->text())
+            modified = true;
+        else if (m_exception->borderSize() != m_ui.borderSizeComboBox->currentIndex())
+            modified = true;
+        else if (m_exception->hideTitleBar() != m_ui.hideTitleBar->isChecked())
+            modified = true;
+        else if (m_exception->opaqueTitleBar() != m_ui.opaqueTitleBar->isChecked())
+            modified = true;
+        else if (m_exception->opacityOverride() != m_ui.opacityOverrideLabelSpinBox->value())
+            modified = true;
+        else if (m_exception->flatTitleBar() != m_ui.flatTitleBar->isChecked())
+            modified = true;
+        else if (m_exception->isDialog() != m_ui.isDialog->isChecked())
+            modified = true;
         else
         {
             // check mask
@@ -156,50 +150,38 @@ namespace Breeze
     //___________________________________________
     void ExceptionDialog::selectWindowProperties()
     {
-
         // create widget
-        if( !m_detectDialog )
+        if(!m_detectDialog)
         {
-            m_detectDialog = new DetectDialog( this );
-            connect( m_detectDialog, &DetectDialog::detectionDone, this, &ExceptionDialog::readWindowProperties );
+            m_detectDialog = new DetectDialog(this);
+            connect(m_detectDialog, &DetectDialog::detectionDone, this, &ExceptionDialog::readWindowProperties);
         }
 
-        m_detectDialog->detect(0);
-
+        m_detectDialog->detect();
     }
 
     //___________________________________________
-    void ExceptionDialog::readWindowProperties( bool valid )
+    void ExceptionDialog::readWindowProperties(bool valid)
     {
-        Q_CHECK_PTR( m_detectDialog );
-        if( valid )
-        {
-
-            // type
-            m_ui.exceptionType->setCurrentIndex( m_detectDialog->exceptionType() );
-
+        Q_CHECK_PTR(m_detectDialog);
+        if (valid) {
             // window info
-            const KWindowInfo& info( m_detectDialog->windowInfo() );
+            const QVariantMap properties = m_detectDialog->properties();
 
-            switch( m_detectDialog->exceptionType() )
-            {
-
-                default:
-                case InternalSettings::ExceptionWindowClassName:
-                m_ui.exceptionEditor->setText( QString::fromUtf8( info.windowClassClass() ) );
+            switch (m_ui.exceptionType->currentIndex()) {
+            default:
+            case InternalSettings::ExceptionWindowClassName:
+                m_ui.exceptionEditor->setText(properties.value(QStringLiteral("resourceClass")).toString());
                 break;
 
-                case InternalSettings::ExceptionWindowTitle:
-                m_ui.exceptionEditor->setText( info.name() );
+            case InternalSettings::ExceptionWindowTitle:
+                m_ui.exceptionEditor->setText(properties.value(QStringLiteral("caption")).toString());
                 break;
-
             }
-
         }
 
         delete m_detectDialog;
         m_detectDialog = nullptr;
-
     }
 
 }

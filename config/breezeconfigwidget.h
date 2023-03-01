@@ -25,10 +25,10 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "ui_breezeconfigurationui.h"
+#include "breeze.h"
 #include "breezeexceptionlistwidget.h"
 #include "breezesettings.h"
-#include "breeze.h"
+#include "ui_breezeconfigurationui.h"
 
 #include <KCModule>
 #include <KSharedConfig>

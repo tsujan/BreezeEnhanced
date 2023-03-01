@@ -50,7 +50,6 @@ namespace Breeze
         connect( m_ui.titleMarginSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
         connect( m_ui.btnSpacingSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
         connect( m_ui.drawBorderOnMaximizedWindows, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
-        connect( m_ui.drawSizeGrip, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.drawBackgroundGradient, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
         connect( m_ui.macOSButtons, SIGNAL(clicked()), SLOT(updateChanged()) );
         connect( m_ui.opacitySpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
@@ -89,7 +88,6 @@ namespace Breeze
         m_ui.titleMarginSpinBox->setValue( m_internalSettings->extraTitleMargin() );
         m_ui.btnSpacingSpinBox->setValue( m_internalSettings->buttonSpacing() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
-        m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
         m_ui.drawBackgroundGradient->setChecked( m_internalSettings->drawBackgroundGradient() );
         m_ui.animationsEnabled->setChecked( m_internalSettings->animationsEnabled() );
         m_ui.animationsDuration->setValue( m_internalSettings->animationsDuration() );
@@ -127,8 +125,10 @@ namespace Breeze
         m_ui.italicCheckBox->setChecked( f.italic() );
 
         // load shadows
-        if( m_internalSettings->shadowSize() <= InternalSettings::ShadowVeryLarge ) m_ui.shadowSize->setCurrentIndex( m_internalSettings->shadowSize() );
-        else m_ui.shadowSize->setCurrentIndex( InternalSettings::ShadowLarge );
+        if( m_internalSettings->shadowSize() <= InternalSettings::ShadowVeryLarge )
+            m_ui.shadowSize->setCurrentIndex(m_internalSettings->shadowSize());
+        else
+            m_ui.shadowSize->setCurrentIndex(InternalSettings::ShadowLarge);
 
         m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
         m_ui.shadowColor->setColor( m_internalSettings->shadowColor() );
@@ -155,7 +155,6 @@ namespace Breeze
         m_internalSettings->setExtraTitleMargin( m_ui.titleMarginSpinBox->value() );
         m_internalSettings->setButtonSpacing( m_ui.btnSpacingSpinBox->value() );
         m_internalSettings->setDrawBorderOnMaximizedWindows( m_ui.drawBorderOnMaximizedWindows->isChecked() );
-        m_internalSettings->setDrawSizeGrip( m_ui.drawSizeGrip->isChecked() );
         m_internalSettings->setDrawBackgroundGradient( m_ui.drawBackgroundGradient->isChecked() );
         m_internalSettings->setAnimationsEnabled( m_ui.animationsEnabled->isChecked() );
         m_internalSettings->setAnimationsDuration( m_ui.animationsDuration->value() );
@@ -232,7 +231,6 @@ namespace Breeze
         m_ui.titleMarginSpinBox->setValue( m_internalSettings->extraTitleMargin() );
         m_ui.btnSpacingSpinBox->setValue( m_internalSettings->buttonSpacing() );
         m_ui.drawBorderOnMaximizedWindows->setChecked( m_internalSettings->drawBorderOnMaximizedWindows() );
-        m_ui.drawSizeGrip->setChecked( m_internalSettings->drawSizeGrip() );
         m_ui.drawBackgroundGradient->setChecked( m_internalSettings->drawBackgroundGradient() );
         m_ui.animationsEnabled->setChecked( m_internalSettings->animationsEnabled() );
         m_ui.animationsDuration->setValue( m_internalSettings->animationsDuration() );
@@ -277,39 +275,57 @@ namespace Breeze
     {
 
         // check configuration
-        if( !m_internalSettings ) return;
+        if(!m_internalSettings)
+            return;
 
         // track modifications
-        bool modified( false );
+        bool modified(false);
         QFont f; f.fromString( m_internalSettings->titleBarFont() );
 
-        if (m_ui.macOSButtons->isChecked() != m_internalSettings->macOSButtons()) modified = true;
-        if( m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment() ) modified = true;
-        else if( m_ui.buttonSize->currentIndex() != m_internalSettings->buttonSize() ) modified = true;
-        else if( m_ui.titleMarginSpinBox->value() != m_internalSettings->extraTitleMargin() ) modified = true;
-        else if( m_ui.btnSpacingSpinBox->value() != m_internalSettings->buttonSpacing() ) modified = true;
-        else if( m_ui.drawBorderOnMaximizedWindows->isChecked() !=  m_internalSettings->drawBorderOnMaximizedWindows() ) modified = true;
-        else if( m_ui.drawSizeGrip->isChecked() !=  m_internalSettings->drawSizeGrip() ) modified = true;
-        else if( m_ui.drawBackgroundGradient->isChecked() !=  m_internalSettings->drawBackgroundGradient() ) modified = true;
-        else if( m_ui.opacitySpinBox->value() != m_internalSettings->backgroundOpacity() ) modified = true;
-        else if( m_ui.gradientSpinBox->value() != m_internalSettings->backgroundGradientIntensity() ) modified = true;
+        if (m_ui.macOSButtons->isChecked() != m_internalSettings->macOSButtons())
+            modified = true;
+        if (m_ui.titleAlignment->currentIndex() != m_internalSettings->titleAlignment())
+            modified = true;
+        else if (m_ui.buttonSize->currentIndex() != m_internalSettings->buttonSize())
+            modified = true;
+        else if (m_ui.titleMarginSpinBox->value() != m_internalSettings->extraTitleMargin())
+            modified = true;
+        else if (m_ui.btnSpacingSpinBox->value() != m_internalSettings->buttonSpacing())
+            modified = true;
+        else if (m_ui.drawBorderOnMaximizedWindows->isChecked() !=  m_internalSettings->drawBorderOnMaximizedWindows())
+            modified = true;
+        else if (m_ui.drawBackgroundGradient->isChecked() !=  m_internalSettings->drawBackgroundGradient())
+            modified = true;
+        else if (m_ui.opacitySpinBox->value() != m_internalSettings->backgroundOpacity())
+            modified = true;
+        else if (m_ui.gradientSpinBox->value() != m_internalSettings->backgroundGradientIntensity())
+            modified = true;
 
         // font (also see below)
-        else if( m_ui.fontComboBox->currentFont().toString() != f.family() ) modified = true;
-        else if( m_ui.fontSizeSpinBox->value() != f.pointSize() ) modified = true;
-        else if( m_ui.italicCheckBox->isChecked() != f.italic() ) modified = true;
+        else if (m_ui.fontComboBox->currentFont().toString() != f.family())
+            modified = true;
+        else if (m_ui.fontSizeSpinBox->value() != f.pointSize())
+            modified = true;
+        else if (m_ui.italicCheckBox->isChecked() != f.italic())
+            modified = true;
 
         // animations
-        else if( m_ui.animationsEnabled->isChecked() !=  m_internalSettings->animationsEnabled() ) modified = true;
-        else if( m_ui.animationsDuration->value() != m_internalSettings->animationsDuration() ) modified = true;
+        else if (m_ui.animationsEnabled->isChecked() !=  m_internalSettings->animationsEnabled())
+            modified = true;
+        else if (m_ui.animationsDuration->value() != m_internalSettings->animationsDuration())
+            modified = true;
 
         // shadows
-        else if( m_ui.shadowSize->currentIndex() !=  m_internalSettings->shadowSize() ) modified = true;
-        else if( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) != m_internalSettings->shadowStrength() ) modified = true;
-        else if( m_ui.shadowColor->color() != m_internalSettings->shadowColor() ) modified = true;
+        else if (m_ui.shadowSize->currentIndex() !=  m_internalSettings->shadowSize())
+            modified = true;
+        else if (qRound(qreal(m_ui.shadowStrength->value()*255)/100) != m_internalSettings->shadowStrength())
+            modified = true;
+        else if (m_ui.shadowColor->color() != m_internalSettings->shadowColor())
+            modified = true;
 
         // exceptions
-        else if( m_ui.exceptions->isChanged() ) modified = true;
+        else if (m_ui.exceptions->isChanged())
+            modified = true;
         else {
             int indx = m_ui.weightComboBox->currentIndex();
             switch (indx) {

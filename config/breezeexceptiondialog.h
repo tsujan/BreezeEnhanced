@@ -25,8 +25,8 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "ui_breezeexceptiondialog.h"
 #include "breeze.h"
+#include "ui_breezeexceptiondialog.h"
 
 #include <QCheckBox>
 #include <QMap>
