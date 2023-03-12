@@ -1,6 +1,7 @@
 V5.27
 ---------
  * Bumped the version to 5.27 and imported useful changes from breeze-5.27.2.
+ * Removed the option about drawing border on maximized and tiled windows (it was both ugly and confusing).
 
  V5.26
 ---------

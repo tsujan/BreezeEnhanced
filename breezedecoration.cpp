@@ -379,12 +379,13 @@ namespace Breeze
         const int bottom = (c->isShaded() || isBottomEdge()) ? 0 : borderSize(true);
 
         int top = 0;
-        if( hideTitleBar() ) top = bottom;
-        else {
-
+        if (hideTitleBar())
+            top = bottom;
+        else
+        {
             QFont f; f.fromString(m_internalSettings->titleBarFont());
             QFontMetrics fm(f);
-            top += qMax(fm.height(), buttonHeight() );
+            top += qMax(fm.height(), buttonHeight());
 
             // padding below
             // extra pixel is used for the active window outline
@@ -393,7 +394,6 @@ namespace Breeze
 
             // padding above
             top += baseSize*Metrics::TitleBar_TopMargin;
-
         }
 
         setBorders(QMargins(left, top, right, bottom));
@@ -402,15 +402,16 @@ namespace Breeze
         const int extSize = s->largeSpacing();
         int extSides = 0;
         int extBottom = 0;
-        if( hasNoBorders() )
+        if (hasNoBorders())
         {
-            if( !isMaximizedHorizontally() ) extSides = extSize;
-            if( !isMaximizedVertically() ) extBottom = extSize;
-
-        } else if( hasNoSideBorders() && !isMaximizedHorizontally() ) {
-
+            if (!isMaximizedHorizontally())
+                extSides = extSize;
+            if (!isMaximizedVertically())
+                extBottom = extSize;
+        }
+        else if (hasNoSideBorders() && !isMaximizedHorizontally())
+        {
             extSides = extSize;
-
         }
 
         setResizeOnlyBorders(QMargins(extSides, 0, extSides, extBottom));
@@ -632,7 +633,7 @@ namespace Breeze
         auto s = settings();
 
         // paint background
-        if(!c->isShaded())
+        if (!c->isShaded())
         {
             painter->fillRect(rect(), Qt::transparent);
             painter->save();
@@ -644,10 +645,10 @@ namespace Breeze
             painter->setBrush(winCol);
 
             // clip away the top part
-            if(!hideTitleBar())
+            if (!hideTitleBar())
                 painter->setClipRect(0, borderTop(), size().width(), size().height() - borderTop(), Qt::IntersectClip);
 
-            if(s->isAlphaChannelSupported())
+            if (s->isAlphaChannelSupported())
                 painter->drawRoundedRect(rect(), m_scaledCornerRadius, m_scaledCornerRadius);
             else
                 painter->drawRect(rect());
@@ -655,9 +656,10 @@ namespace Breeze
             painter->restore();
         }
 
-        if(!hideTitleBar()) paintTitleBar(painter, repaintRegion);
+        if (!hideTitleBar())
+            paintTitleBar(painter, repaintRegion);
 
-        if(hasBorders() && !s->isAlphaChannelSupported())
+        if (hasBorders() && !s->isAlphaChannelSupported())
         {
             painter->save();
             painter->setRenderHint(QPainter::Antialiasing, false);
