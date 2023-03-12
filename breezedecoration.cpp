@@ -388,9 +388,9 @@ namespace Breeze
             top += qMax(fm.height(), buttonHeight());
 
             // padding below
-            // extra pixel is used for the active window outline
+            // extra pixel is used for the active window outline (but not in the shaded state)
             const int baseSize = s->smallSpacing();
-            top += baseSize*Metrics::TitleBar_BottomMargin + 1;
+            top += baseSize*Metrics::TitleBar_BottomMargin + (c->isShaded() ? 0 : 1);
 
             // padding above
             top += baseSize*Metrics::TitleBar_TopMargin;
@@ -771,7 +771,13 @@ namespace Breeze
 
     //________________________________________________________________
     int Decoration::captionHeight() const
-    { return hideTitleBar() ? borderTop() : borderTop() - settings()->smallSpacing()*(Metrics::TitleBar_BottomMargin + Metrics::TitleBar_TopMargin ) - 1; }
+    {
+        const auto c = client().toStrongRef();
+        return hideTitleBar() ? borderTop()
+                              : borderTop()
+                                - settings()->smallSpacing()*(Metrics::TitleBar_BottomMargin + Metrics::TitleBar_TopMargin )
+                                - (c->isShaded() ? 0 : 1); // see recalculateBorders()
+    }
 
     //________________________________________________________________
     QPair<QRect,Qt::Alignment> Decoration::captionRect() const
