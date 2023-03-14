@@ -145,6 +145,7 @@ namespace Breeze
     static int g_shadowStrength = 255;
     static QColor g_shadowColor = Qt::black;
     static QSharedPointer<KDecoration2::DecorationShadow> g_sShadow;
+    static QSharedPointer<KDecoration2::DecorationShadow> g_sShadowInactive;
 
     //________________________________________________________________
     Decoration::Decoration(QObject *parent, const QVariantList &args)
@@ -161,6 +162,7 @@ namespace Breeze
         if (g_sDecoCount == 0) {
             // last deco destroyed, clean up shadow
             g_sShadow.clear();
+            g_sShadowInactive.clear();
         }
     }
 
@@ -274,7 +276,7 @@ namespace Breeze
         });
 
         createButtons();
-        createShadow();
+        updateShadow();
     }
 
     //________________________________________________________________
@@ -293,17 +295,19 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::updateAnimationState()
     {
-        if( m_internalSettings->animationsEnabled() )
+        // active and inactive shadows are different
+        updateShadow();
+
+        if (m_internalSettings->animationsEnabled())
         {
-
             const auto c = client().toStrongRef();
-            m_animation->setDirection( c->isActive() ? QAbstractAnimation::Forward : QAbstractAnimation::Backward );
-            if( m_animation->state() != QAbstractAnimation::Running ) m_animation->start();
-
-        } else {
-
+            m_animation->setDirection(c->isActive() ? QAbstractAnimation::Forward : QAbstractAnimation::Backward);
+            if (m_animation->state() != QAbstractAnimation::Running)
+                m_animation->start();
+        }
+        else
+        {
             update();
-
         }
     }
 
@@ -363,7 +367,7 @@ namespace Breeze
         resetBlurRegion();
 
         // shadow
-        createShadow();
+        updateShadow();
 
     }
 
@@ -837,12 +841,15 @@ namespace Breeze
     }
 
     //________________________________________________________________
-    void Decoration::createShadow()
+    void Decoration::updateShadow()
     {
-        if (!g_sShadow
-                ||g_shadowSizeEnum != m_internalSettings->shadowSize()
-                || g_shadowStrength != m_internalSettings->shadowStrength()
-                || g_shadowColor != m_internalSettings->shadowColor())
+        const auto c = client().toStrongRef();
+        auto &shadow = c->isActive() ? g_sShadow : g_sShadowInactive;
+
+        if (!shadow
+            || g_shadowSizeEnum != m_internalSettings->shadowSize()
+            || g_shadowStrength != m_internalSettings->shadowStrength()
+            || g_shadowColor != m_internalSettings->shadowColor())
         {
             g_shadowSizeEnum = m_internalSettings->shadowSize();
             g_shadowStrength = m_internalSettings->shadowStrength();
@@ -851,7 +858,8 @@ namespace Breeze
             const CompositeShadowParams params = lookupShadowParams(g_shadowSizeEnum);
             if (params.isNone()) {
                 g_sShadow.clear();
-                setShadow(g_sShadow);
+                g_sShadowInactive.clear();
+                setShadow(shadow);
                 return;
             }
 
@@ -868,7 +876,7 @@ namespace Breeze
             shadowRenderer.setBorderRadius(m_scaledCornerRadius + 0.5);
             shadowRenderer.setBoxSize(boxSize);
 
-            const qreal strength = static_cast<qreal>(g_shadowStrength) / 255.0;
+            const qreal strength = static_cast<qreal>(g_shadowStrength) / 255.0 * (c->isActive() ? 1.0 : 0.5);
             shadowRenderer.addShadow(params.shadow1.offset, params.shadow1.radius,
                 withOpacity(g_shadowColor, params.shadow1.opacity * strength));
             shadowRenderer.addShadow(params.shadow2.offset, params.shadow2.radius,
@@ -911,13 +919,13 @@ namespace Breeze
 
             painter.end();
 
-            g_sShadow = QSharedPointer<KDecoration2::DecorationShadow>::create();
-            g_sShadow->setPadding(padding);
-            g_sShadow->setInnerShadowRect(QRect(outerRect.center(), QSize(1, 1)));
-            g_sShadow->setShadow(shadowTexture);
+            shadow = QSharedPointer<KDecoration2::DecorationShadow>::create();
+            shadow->setPadding(padding);
+            shadow->setInnerShadowRect(QRect(outerRect.center(), QSize(1, 1)));
+            shadow->setShadow(shadowTexture);
         }
 
-        setShadow(g_sShadow);
+        setShadow(shadow);
     }
 
     void Decoration::setScaledCornerRadius()

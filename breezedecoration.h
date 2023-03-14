@@ -114,7 +114,7 @@ namespace Breeze
 
         void createButtons();
         void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
-        void createShadow();
+        void updateShadow();
 
         void setScaledCornerRadius();
 
