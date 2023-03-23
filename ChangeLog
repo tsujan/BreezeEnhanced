@@ -4,6 +4,7 @@ V5.27
  * Removed the option about drawing border on maximized and tiled windows (it was both ugly and confusing).
  * Removed the 1-pix empty gap below shaded windows.
  * Smaller shadow for inactive windows (without any shadow animation).
+ * Removed the activation state animation. It was redundant and wasn't consistent with Qt's activation state (which Kvantum supports).
 
  V5.26
 ---------

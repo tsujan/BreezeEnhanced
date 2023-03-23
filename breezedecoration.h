@@ -66,15 +66,6 @@ namespace Breeze
         //* button height
         int buttonHeight() const;
 
-        //*@name active state change animation
-        //@{
-        void setOpacity( qreal );
-
-        qreal opacity() const
-        { return m_opacity; }
-
-        //@}
-
         //*@name colors
         //@{
         QColor titleBarColor() const;
@@ -105,7 +96,7 @@ namespace Breeze
         void updateButtonsGeometry();
         void updateButtonsGeometryDelayed();
         void updateTitleBar();
-        void updateAnimationState();
+        void updateActiveState();
 
         private:
 
@@ -136,12 +127,6 @@ namespace Breeze
         InternalSettingsPtr m_internalSettings;
         KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;
         KDecoration2::DecorationButtonGroup *m_rightButtons = nullptr;
-
-        //* active state change animation
-        QVariantAnimation *m_animation;
-
-        //* active state change opacity
-        qreal m_opacity = 0;
 
         //*frame corner radius, scaled according to DPI
         qreal m_scaledCornerRadius = 3;

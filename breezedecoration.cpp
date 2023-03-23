@@ -150,7 +150,6 @@ namespace Breeze
     //________________________________________________________________
     Decoration::Decoration(QObject *parent, const QVariantList &args)
         : KDecoration2::Decoration(parent, args)
-        , m_animation( new QVariantAnimation( this ) )
     {
         g_sDecoCount++;
     }
@@ -167,27 +166,12 @@ namespace Breeze
     }
 
     //________________________________________________________________
-    void Decoration::setOpacity(qreal value)
-    {
-        if (m_opacity == value)
-            return;
-        m_opacity = value;
-        update();
-    }
-
-    //________________________________________________________________
     QColor Decoration::titleBarColor() const
     {
 
         const auto c = client().toStrongRef();
         if( hideTitleBar() ) return c->color( ColorGroup::Inactive, ColorRole::TitleBar );
-        else if( m_animation->state() == QAbstractAnimation::Running )
-        {
-            return KColorUtils::mix(
-                c->color( ColorGroup::Inactive, ColorRole::TitleBar ),
-                c->color( ColorGroup::Active, ColorRole::TitleBar ),
-                m_opacity );
-        } else return c->color( c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::TitleBar );
+        return c->color( c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::TitleBar );
 
     }
 
@@ -196,13 +180,7 @@ namespace Breeze
     {
 
         const auto c = client().toStrongRef();
-        if( m_animation->state() == QAbstractAnimation::Running )
-        {
-            return KColorUtils::mix(
-                c->color( ColorGroup::Inactive, ColorRole::Foreground ),
-                c->color( ColorGroup::Active, ColorRole::Foreground ),
-                m_opacity );
-        } else return  c->color( c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Foreground );
+        return  c->color( c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Foreground );
 
     }
 
@@ -210,15 +188,6 @@ namespace Breeze
     void Decoration::init()
     {
         const auto c = client().toStrongRef();
-
-        // active state change animation
-        // It is important start and end value are of the same type, hence 0.0 and not just 0
-        m_animation->setStartValue( 0.0 );
-        m_animation->setEndValue( 1.0 );
-        m_animation->setEasingCurve( QEasingCurve::InOutQuad );
-        connect(m_animation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
-            setOpacity(value.toReal());
-        });
 
         reconfigure();
         updateTitleBar();
@@ -253,7 +222,7 @@ namespace Breeze
             }
         );
 
-        connect(c.data(), &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateAnimationState);
+        connect(c.data(), &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateActiveState);
         connect(c.data(), &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateTitleBar);
         connect(c.data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleBar);
         //connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::setOpaque);
@@ -293,22 +262,10 @@ namespace Breeze
     }
 
     //________________________________________________________________
-    void Decoration::updateAnimationState()
+    void Decoration::updateActiveState()
     {
-        // active and inactive shadows are different
-        updateShadow();
-
-        if (m_internalSettings->animationsEnabled())
-        {
-            const auto c = client().toStrongRef();
-            m_animation->setDirection(c->isActive() ? QAbstractAnimation::Forward : QAbstractAnimation::Backward);
-            if (m_animation->state() != QAbstractAnimation::Running)
-                m_animation->start();
-        }
-        else
-        {
-            update();
-        }
+        updateShadow(); // active and inactive shadows are different
+        update();
     }
 
     //________________________________________________________________
@@ -356,9 +313,6 @@ namespace Breeze
         m_internalSettings = SettingsProvider::self()->internalSettings( this );
 
         setScaledCornerRadius();
-
-        // animation
-        m_animation->setDuration( m_internalSettings->animationsDuration() );
 
         // borders
         recalculateBorders();

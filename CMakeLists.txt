@@ -1,9 +1,8 @@
+cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
 project(breezeenhanced)
 set(PROJECT_VERSION "5.27.0")
 set(PROJECT_VERSION_MAJOR 5)
-
-cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
 include(WriteBasicConfigVersionFile)
 include(FeatureSummary)
