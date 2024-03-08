@@ -1,37 +1,53 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
 project(breezeenhanced)
-set(PROJECT_VERSION "5.27.0")
-set(PROJECT_VERSION_MAJOR 5)
+set(PROJECT_VERSION "6.0.80")
+set(PROJECT_VERSION_MAJOR 6)
 
 include(WriteBasicConfigVersionFile)
 include(FeatureSummary)
 
-find_package(ECM 0.0.9 REQUIRED NO_MODULE)
+set(QT_MAJOR_VERSION 6)
+set(QT_MIN_VERSION "6.6.0")
+set(KF6_MIN_VERSION "6.0.0")
+set(KDE_COMPILERSETTINGS_LEVEL "5.82")
+
+find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_SOURCE_DIR}/cmake)
 
-set(QT_MIN_VERSION "5.15.0")
-set(KF5_MIN_VERSION "5.102.0")
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(CMakePackageConfigHelpers)
 include(ECMInstallIcons)
-include(KDEInstallDirs)
+include(KDEInstallDirs6)
 include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 include(GenerateExportHeader)
+include(KDEClangFormat)
 # include(GtkUpdateIconCache)
 
 find_package(KDecoration2 REQUIRED)
+
+if(NOT WIN32 AND NOT APPLE)
+    find_package(KF6KCMUtils ${KF6_MIN_VERSION})
+    set_package_properties(KF6KCMUtils PROPERTIES
+        TYPE REQUIRED
+        DESCRIPTION "Helps create configuration modules"
+        PURPOSE "KCMUtils used for the configuration modules or the decoration and Qt Style"
+    )
+endif()
 
 
 # old stuff
 add_definitions(-DTRANSLATION_DOMAIN="breeze_kwin_deco")
 
 
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS CoreAddons GuiAddons ConfigWidgets WindowSystem I18n)
-find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS DBus)
+find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS CoreAddons GuiAddons ConfigWidgets WindowSystem I18n)
+find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Widgets DBus)
 
 ################# includes #################
 add_subdirectory(libbreezecommon)
@@ -73,18 +89,19 @@ add_library(breezeenhanced MODULE
 
 target_link_libraries(breezeenhanced
     PUBLIC
-        Qt::Core
-        Qt::Gui
-        Qt::DBus
+        Qt6::Core
+        Qt6::Gui
+        Qt6::DBus
     PRIVATE
-        breezeenhancedcommon5
+        breezeenhancedcommon6
         KDecoration2::KDecoration
-        KF5::ConfigCore
-        KF5::CoreAddons
-        KF5::ConfigWidgets
-        KF5::GuiAddons
-        KF5::I18n
-        KF5::WindowSystem)
+        KF6::ConfigCore
+        KF6::CoreAddons
+        KF6::ConfigWidgets
+        KF6::GuiAddons
+        KF6::I18n
+        KF6::KCMUtils
+        KF6::WindowSystem)
 
-install(TARGETS breezeenhanced DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
-install(FILES config/breezeenhancedconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICESDIR})
+install(TARGETS breezeenhanced DESTINATION ${KDE_INSTALL_PLUGINDIR}/${KDECORATION_PLUGIN_DIR})
+kcmutils_generate_desktop_file(breezeenhanced)
