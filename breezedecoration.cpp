@@ -44,10 +44,10 @@
 
 K_PLUGIN_FACTORY_WITH_JSON(
     BreezeDecoFactory,
-    "breeze.json",
+    "breezeenhanced.json",
     registerPlugin<Breeze::Decoration>();
     registerPlugin<Breeze::Button>();
-    registerPlugin<Breeze::ConfigWidget>();
+    //registerPlugin<Breeze::ConfigWidget>();
 )
 
 namespace
@@ -144,8 +144,8 @@ namespace Breeze
     static int g_shadowSizeEnum = InternalSettings::ShadowLarge;
     static int g_shadowStrength = 255;
     static QColor g_shadowColor = Qt::black;
-    static QSharedPointer<KDecoration2::DecorationShadow> g_sShadow;
-    static QSharedPointer<KDecoration2::DecorationShadow> g_sShadowInactive;
+    static std::shared_ptr<KDecoration2::DecorationShadow> g_sShadow;
+    static std::shared_ptr<KDecoration2::DecorationShadow> g_sShadowInactive;
 
     //________________________________________________________________
     Decoration::Decoration(QObject *parent, const QVariantList &args)
@@ -160,8 +160,8 @@ namespace Breeze
         g_sDecoCount--;
         if (g_sDecoCount == 0) {
             // last deco destroyed, clean up shadow
-            g_sShadow.clear();
-            g_sShadowInactive.clear();
+            g_sShadow.reset();
+            g_sShadowInactive.reset();
         }
     }
 
@@ -169,7 +169,7 @@ namespace Breeze
     QColor Decoration::titleBarColor() const
     {
 
-        const auto c = client().toStrongRef();
+        const auto c = client();
         if( hideTitleBar() ) return c->color( ColorGroup::Inactive, ColorRole::TitleBar );
         return c->color( c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::TitleBar );
 
@@ -179,42 +179,42 @@ namespace Breeze
     QColor Decoration::fontColor() const
     {
 
-        const auto c = client().toStrongRef();
+        const auto c = client();
         return  c->color( c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Foreground );
 
     }
 
     //________________________________________________________________
-    void Decoration::init()
+    bool Decoration::init()
     {
-        const auto c = client().toStrongRef();
+        const auto c = client();
 
         reconfigure();
         updateTitleBar();
         auto s = settings();
-        connect(s.data(), &KDecoration2::DecorationSettings::borderSizeChanged, this, &Decoration::recalculateBorders);
+        connect(s.get(), &KDecoration2::DecorationSettings::borderSizeChanged, this, &Decoration::recalculateBorders);
 
         // a change in font might cause the borders to change
         recalculateBorders();
         resetBlurRegion();
-        connect(s.data(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::recalculateBorders);
+        connect(s.get(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::recalculateBorders);
 
         // buttons
-        connect(s.data(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::updateButtonsGeometryDelayed);
-        connect(s.data(), &KDecoration2::DecorationSettings::decorationButtonsLeftChanged, this, &Decoration::updateButtonsGeometryDelayed);
-        connect(s.data(), &KDecoration2::DecorationSettings::decorationButtonsRightChanged, this, &Decoration::updateButtonsGeometryDelayed);
+        connect(s.get(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::updateButtonsGeometryDelayed);
+        connect(s.get(), &KDecoration2::DecorationSettings::decorationButtonsLeftChanged, this, &Decoration::updateButtonsGeometryDelayed);
+        connect(s.get(), &KDecoration2::DecorationSettings::decorationButtonsRightChanged, this, &Decoration::updateButtonsGeometryDelayed);
 
         // full reconfiguration
-        connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::reconfigure);
-        connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, SettingsProvider::self(), &SettingsProvider::reconfigure, Qt::UniqueConnection );
-        connect(s.data(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::updateButtonsGeometryDelayed);
+        connect(s.get(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::reconfigure);
+        connect(s.get(), &KDecoration2::DecorationSettings::reconfigured, SettingsProvider::self(), &SettingsProvider::reconfigure, Qt::UniqueConnection );
+        connect(s.get(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::updateButtonsGeometryDelayed);
 
-        connect(c.data(), &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::recalculateBorders);
-        connect(c.data(), &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
-        connect(c.data(), &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
-        connect(c.data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::recalculateBorders);
+        connect(c, &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::recalculateBorders);
+        connect(c, &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
+        connect(c, &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
+        connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::recalculateBorders);
 
-        connect(c.data(), &KDecoration2::DecoratedClient::captionChanged, this,
+        connect(c, &KDecoration2::DecoratedClient::captionChanged, this,
             [this]()
             {
                 // update the caption area
@@ -222,37 +222,39 @@ namespace Breeze
             }
         );
 
-        connect(c.data(), &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateActiveState);
-        connect(c.data(), &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateTitleBar);
-        connect(c.data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleBar);
+        connect(c, &KDecoration2::DecoratedClient::activeChanged, this, &Decoration::updateActiveState);
+        connect(c, &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateTitleBar);
+        connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateTitleBar);
         //connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::setOpaque);
 
-        connect(c.data(), &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateButtonsGeometry);
-        connect(c.data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateButtonsGeometry);
-        connect(c.data(), &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
-        connect(c.data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateButtonsGeometry);
+        connect(c, &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::updateButtonsGeometry);
+        connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::updateButtonsGeometry);
+        connect(c, &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
+        connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::updateButtonsGeometry);
 
-        connect(s.data(), &KDecoration2::DecorationSettings::borderSizeChanged, this, &Decoration::resetBlurRegion);
-        connect(s.data(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::resetBlurRegion);
-        connect(c.data(), &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::resetBlurRegion);
-        connect(c.data(), &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::resetBlurRegion);
-        connect(c.data(), &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::resetBlurRegion);
-        connect(c.data(), &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::resetBlurRegion);
-        connect(c.data(), &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::resetBlurRegion);
-        connect(c.data(), &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::resetBlurRegion);
-        connect(c.data(), &KDecoration2::DecoratedClient::heightChanged, this, [this]() {
+        connect(s.get(), &KDecoration2::DecorationSettings::borderSizeChanged, this, &Decoration::resetBlurRegion);
+        connect(s.get(), &KDecoration2::DecorationSettings::spacingChanged, this, &Decoration::resetBlurRegion);
+        connect(c, &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::resetBlurRegion);
+        connect(c, &KDecoration2::DecoratedClient::maximizedHorizontallyChanged, this, &Decoration::resetBlurRegion);
+        connect(c, &KDecoration2::DecoratedClient::maximizedVerticallyChanged, this, &Decoration::resetBlurRegion);
+        connect(c, &KDecoration2::DecoratedClient::maximizedChanged, this, &Decoration::resetBlurRegion);
+        connect(c, &KDecoration2::DecoratedClient::shadedChanged, this, &Decoration::resetBlurRegion);
+        connect(c, &KDecoration2::DecoratedClient::widthChanged, this, &Decoration::resetBlurRegion);
+        connect(c, &KDecoration2::DecoratedClient::heightChanged, this, [this]() {
             if (!hasNoSideBorders()) resetBlurRegion();
         });
 
         createButtons();
         updateShadow();
+
+        return true;
     }
 
     //________________________________________________________________
     void Decoration::updateTitleBar()
     {
         auto s = settings();
-        const auto c = client().toStrongRef();
+        const auto c = client();
         const bool maximized = isMaximized();
         const int width =  maximized ? c->width() : c->width() - 2*s->largeSpacing()*Metrics::TitleBar_SideMargin;
         const int height = maximized ? borderTop() : borderTop() - s->smallSpacing()*Metrics::TitleBar_TopMargin;
@@ -328,7 +330,7 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::recalculateBorders()
     {
-        const auto c = client().toStrongRef();
+        const auto c = client();
         auto s = settings();
 
         // left, right and bottom borders
@@ -388,7 +390,7 @@ namespace Breeze
         }
 
         QRegion region;
-        const auto c = client().toStrongRef();
+        const auto c = client();
         QSize rSize(m_scaledCornerRadius, m_scaledCornerRadius);
 
         if (!c->isShaded() && !isMaximized() && !hasNoBorders())
@@ -545,7 +547,7 @@ namespace Breeze
             if( isLeftEdge() )
             {
                 // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
-                auto button = static_cast<Button*>( m_leftButtons->buttons().front().data() );
+                auto button = static_cast<Button*>( m_leftButtons->buttons().front() );
                 button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth + hPadding, bHeight ) ) );
                 button->setFlag( Button::FlagFirstInList );
                 button->setHorizontalOffset( hPadding );
@@ -569,7 +571,7 @@ namespace Breeze
             if( isRightEdge() )
             {
 
-                auto button = static_cast<Button*>( m_rightButtons->buttons().back().data() );
+                auto button = static_cast<Button*>( m_rightButtons->buttons().back() );
                 button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth + hPadding, bHeight ) ) );
                 button->setFlag( Button::FlagLastInList );
 
@@ -587,7 +589,7 @@ namespace Breeze
     void Decoration::paint(QPainter *painter, const QRect &repaintRegion)
     {
         // TODO: optimize based on repaintRegion
-        auto c = client().toStrongRef();
+        auto c = client();
         auto s = settings();
 
         // paint background
@@ -634,7 +636,7 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::paintTitleBar(QPainter *painter, const QRect &repaintRegion)
     {
-        const auto c = client().toStrongRef();
+        const auto c = client();
         const QRect titleRect(QPoint(0, 0), QSize(size().width(), borderTop()));
 
         if (!titleRect.intersects(repaintRegion)) return;
@@ -730,7 +732,7 @@ namespace Breeze
     //________________________________________________________________
     int Decoration::captionHeight() const
     {
-        const auto c = client().toStrongRef();
+        const auto c = client();
         return hideTitleBar() ? borderTop()
                               : borderTop()
                                 - settings()->smallSpacing()*(Metrics::TitleBar_BottomMargin + Metrics::TitleBar_TopMargin )
@@ -744,7 +746,7 @@ namespace Breeze
         else {
 
             const int extraTitleMargin = m_internalSettings->extraTitleMargin();
-            auto c = client().toStrongRef();
+            auto c = client();
             const int leftOffset = m_leftButtons->buttons().isEmpty() ?
                 Metrics::TitleBar_SideMargin*settings()->smallSpacing() + extraTitleMargin :
                 m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + Metrics::TitleBar_SideMargin*settings()->smallSpacing() + extraTitleMargin;
@@ -797,7 +799,7 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::updateShadow()
     {
-        const auto c = client().toStrongRef();
+        const auto c = client();
         auto &shadow = c->isActive() ? g_sShadow : g_sShadowInactive;
 
         if (!shadow
@@ -811,8 +813,8 @@ namespace Breeze
 
             const CompositeShadowParams params = lookupShadowParams(g_shadowSizeEnum);
             if (params.isNone()) {
-                g_sShadow.clear();
-                g_sShadowInactive.clear();
+                g_sShadow.reset();
+                g_sShadowInactive.reset();
                 setShadow(shadow);
                 return;
             }
@@ -873,7 +875,7 @@ namespace Breeze
 
             painter.end();
 
-            shadow = QSharedPointer<KDecoration2::DecorationShadow>::create();
+            shadow = std::make_shared<KDecoration2::DecorationShadow>();
             shadow->setPadding(padding);
             shadow->setInnerShadowRect(QRect(outerRect.center(), QSize(1, 1)));
             shadow->setShadow(shadowTexture);

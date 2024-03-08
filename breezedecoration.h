@@ -87,7 +87,7 @@ namespace Breeze
         //@}
 
         public Q_SLOTS:
-        void init() override;
+        bool init() override;
 
         private Q_SLOTS:
         void reconfigure();
@@ -152,45 +152,45 @@ namespace Breeze
 
     bool Decoration::isMaximized() const
     {
-        return client().toStrongRef().data()->isMaximized();
+        return client()->isMaximized();
     }
 
     bool Decoration::isMaximizedHorizontally() const
     {
-        return client().toStrongRef().data()->isMaximizedHorizontally();
+        return client()->isMaximizedHorizontally();
     }
 
     bool Decoration::isMaximizedVertically() const
     {
-        return client().toStrongRef().data()->isMaximizedVertically();
+        return client()->isMaximizedVertically();
     }
 
     bool Decoration::isLeftEdge() const
     {
-        const auto c = client().toStrongRef();
+        const auto c = client();
         return (c->isMaximizedHorizontally() || c->adjacentScreenEdges().testFlag(Qt::LeftEdge));
     }
 
     bool Decoration::isRightEdge() const
     {
-        const auto c = client().toStrongRef();
+        const auto c = client();
         return (c->isMaximizedHorizontally() || c->adjacentScreenEdges().testFlag(Qt::RightEdge));
     }
 
     bool Decoration::isTopEdge() const
     {
-        const auto c = client().toStrongRef();
+        const auto c = client();
         return (c->isMaximizedVertically() || c->adjacentScreenEdges().testFlag(Qt::TopEdge));
     }
 
     bool Decoration::isBottomEdge() const
     {
-        const auto c = client().toStrongRef();
+        const auto c = client();
         return (c->isMaximizedVertically() || c->adjacentScreenEdges().testFlag(Qt::BottomEdge));
     }
 
     bool Decoration::hideTitleBar() const
-    { return m_internalSettings->hideTitleBar() && !client().toStrongRef().data()->isShaded(); }
+    { return m_internalSettings->hideTitleBar() && !client()->isShaded(); }
 
     bool Decoration::opaqueTitleBar() const
     { return m_internalSettings->opaqueTitleBar(); }
