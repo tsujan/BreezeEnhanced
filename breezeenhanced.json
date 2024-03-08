@@ -8,10 +8,10 @@
             "org.kde.kdecoration2"
         ]
     },
+    "X-KDE-ConfigModule": "kcm_breezedecoration",
     "org.kde.kdecoration2": {
         "blur": true,
         "defaultTheme": "BreezeEnhanced",
-        "kcmodule": true,
         "recommendedBorderSize": "None"
     }
 }
