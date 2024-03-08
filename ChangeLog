@@ -1,3 +1,7 @@
+V6.01
+---------
+ * Ported from KDE 5 to KDE 6
+
 V5.27
 ---------
  * Bumped the version to 5.27 and imported useful changes from breeze-5.27.2.
