@@ -76,16 +76,15 @@ namespace Breeze
         QString windowClass;
 
         // get the client
-        const auto client = decoration->client().toStrongRef();
+        const auto client = decoration->client();
 
-        foreach( auto internalSettings, m_exceptions )
+        for (auto internalSettings : std::as_const(m_exceptions))
         {
-
             // discard disabled exceptions
-            if( !internalSettings->enabled() ) continue;
+            if (!internalSettings->enabled()) continue;
 
             // discard exceptions with empty exception pattern
-            if( internalSettings->exceptionPattern().isEmpty() ) continue;
+            if (internalSettings->exceptionPattern().isEmpty()) continue;
 
             if (internalSettings->isDialog())
             {
@@ -101,7 +100,7 @@ namespace Breeze
             to the regular expression, based on exception type
             */
             QString value;
-            switch( internalSettings->exceptionType() )
+            switch (internalSettings->exceptionType())
             {
                 case InternalSettings::ExceptionWindowTitle:
                 {
@@ -119,9 +118,10 @@ namespace Breeze
 
             // check matching
             QRegularExpression rx( internalSettings->exceptionPattern() );
-            if( rx.match( value ).hasMatch() )
-            { return internalSettings; }
-
+            if (rx.match(value).hasMatch())
+            {
+                return internalSettings;
+            }
         }
 
         return m_defaultSettings;

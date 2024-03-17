@@ -1,5 +1,3 @@
-#ifndef breezesettingsprovider_h
-#define breezesettingsprovider_h
 /*
  * Copyright 2014  Hugo Pereira Da Costa <hugo.pereira@free.fr>
  *
@@ -20,9 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+
+#pragma once
+
+#include "breeze.h"
 #include "breezedecoration.h"
 #include "breezesettings.h"
-#include "breeze.h"
 
 #include <KSharedConfig>
 
@@ -73,4 +74,3 @@ namespace Breeze
 
 }
 
-#endif

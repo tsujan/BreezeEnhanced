@@ -2,7 +2,11 @@
     "KPlugin": {
         "Description": "Window decoration using the Breeze visual style for the Plasma Desktop",
         "EnabledByDefault": true,
+        "Id": "org.kde.breezeenhanced",
         "Name": "BreezeEnhanced",
+        "ServiceTypes": [
+            "org.kde.kdecoration2"
+        ]
     },
     "X-KDE-ConfigModule": "kcm_breezeenhanced",
     "org.kde.kdecoration2": {

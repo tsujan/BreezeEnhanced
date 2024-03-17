@@ -1,6 +1,3 @@
-#ifndef breeze_h
-#define breeze_h
-
 /*
  * Copyright 2014  Hugo Pereira Da Costa <hugo.pereira@free.fr>
  *
@@ -21,10 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
 #include "breezesettings.h"
 
-#include <QSharedPointer>
 #include <QList>
+#include <QSharedPointer>
 
 namespace Breeze
 {
@@ -70,4 +69,3 @@ namespace Breeze
     };
 }
 
-#endif

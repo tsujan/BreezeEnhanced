@@ -1,6 +1,3 @@
-#ifndef breezeexceptionlist_h
-#define breezeexceptionlist_h
-
 //////////////////////////////////////////////////////////////////////////////
 // breezeexceptionlist.h
 // window decoration exceptions
@@ -26,6 +23,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
+
+#pragma once
 
 #include "breezesettings.h"
 #include "breeze.h"
@@ -59,7 +58,7 @@ namespace Breeze
         protected:
 
         //! generate exception group name for given exception index
-        static QString exceptionGroupName( int index );
+        static QString exceptionGroupName(int index);
 
         //! read configuration
         static void readConfig( KCoreConfigSkeleton*, KConfig*, const QString& );
@@ -76,4 +75,3 @@ namespace Breeze
 
 }
 
-#endif

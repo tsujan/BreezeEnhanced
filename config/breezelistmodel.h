@@ -1,5 +1,3 @@
-#ifndef ListModel_h
-#define ListModel_h
 //////////////////////////////////////////////////////////////////////////////
 // listmodel.h
 // -------------------
@@ -25,10 +23,12 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
+#pragma once
+
 #include "breezeitemmodel.h"
 
-#include <QSet>
 #include <QList>
+#include <QSet>
 
 #include <algorithm>
 
@@ -138,10 +138,10 @@ namespace Breeze
         virtual void add( const ValueType& value )
         {
 
-            emit layoutAboutToBeChanged();
+            Q_EMIT layoutAboutToBeChanged();
             _add( value );
             privateSort();
-            emit layoutChanged();
+            Q_EMIT layoutChanged();
 
         }
 
@@ -153,13 +153,13 @@ namespace Breeze
             // this avoids sending useless signals
             if( values.empty() ) return;
 
-            emit layoutAboutToBeChanged();
+            Q_EMIT layoutAboutToBeChanged();
 
             for( typename List::const_iterator iter = values.begin(); iter != values.end(); iter++ )
             { _add( *iter ); }
 
             privateSort();
-            emit layoutChanged();
+            Q_EMIT layoutChanged();
 
         }
 
@@ -167,15 +167,15 @@ namespace Breeze
         //! insert values
         virtual void insert( const QModelIndex& index, const ValueType& value )
         {
-            emit layoutAboutToBeChanged();
+            Q_EMIT layoutAboutToBeChanged();
             _insert( index, value );
-            emit layoutChanged();
+            Q_EMIT layoutChanged();
         }
 
         //! insert values
         virtual void insert( const QModelIndex& index, const List& values )
         {
-            emit layoutAboutToBeChanged();
+            Q_EMIT layoutAboutToBeChanged();
 
             // need to loop in reverse order so that the "values" ordering is preserved
             ListIterator iter( values );
@@ -183,7 +183,7 @@ namespace Breeze
             while( iter.hasPrevious() )
             { _insert( index, iter.previous() ); }
 
-            emit layoutChanged();
+            Q_EMIT layoutChanged();
 
         }
 
@@ -192,11 +192,11 @@ namespace Breeze
         {
             if( !index.isValid() ) add( value );
             else {
-                emit layoutAboutToBeChanged();
+                Q_EMIT layoutAboutToBeChanged();
                 setIndexSelected( index, false );
                 _values[index.row()] = value;
                 setIndexSelected( index, true );
-                emit layoutChanged();
+                Q_EMIT layoutChanged();
             }
         }
 
@@ -204,9 +204,9 @@ namespace Breeze
         virtual void remove( const ValueType& value )
         {
 
-            emit layoutAboutToBeChanged();
+            Q_EMIT layoutAboutToBeChanged();
             _remove( value );
-            emit layoutChanged();
+            Q_EMIT layoutChanged();
 
         }
 
@@ -218,10 +218,10 @@ namespace Breeze
             // this avoids sending useless signals
             if( values.empty() ) return;
 
-            emit layoutAboutToBeChanged();
+            Q_EMIT layoutAboutToBeChanged();
             for( typename List::const_iterator iter = values.begin(); iter != values.end(); iter++ )
             { _remove( *iter ); }
-            emit layoutChanged();
+            Q_EMIT layoutChanged();
 
         }
 
@@ -238,7 +238,7 @@ namespace Breeze
         virtual void update( List values )
         {
 
-            emit layoutAboutToBeChanged();
+            Q_EMIT layoutAboutToBeChanged();
 
             // store values to be removed
             List removed_values;
@@ -266,7 +266,7 @@ namespace Breeze
             { _add( *iter ); }
 
             privateSort();
-            emit layoutChanged();
+            Q_EMIT layoutChanged();
 
         }
 
@@ -274,11 +274,11 @@ namespace Breeze
         virtual void set( const List& values )
         {
 
-            emit layoutAboutToBeChanged();
+            Q_EMIT layoutAboutToBeChanged();
             _values = values;
             _selection.clear();
             privateSort();
-            emit layoutChanged();
+            Q_EMIT layoutChanged();
        }
 
         //! return all values
@@ -362,4 +362,4 @@ namespace Breeze
 
     };
 }
-#endif
+

@@ -30,19 +30,20 @@
 
 #include <QDBusConnection>
 #include <QDBusMessage>
+#include <QFontDatabase>
 
 namespace Breeze
 {
 
     //_________________________________________________________
-    ConfigWidget::ConfigWidget( QWidget* parent, const QVariantList &args ):
-        KCModule(parent, args),
+    ConfigWidget::ConfigWidget(QObject *parent, const KPluginMetaData &data, const QVariantList & /*args*/):
+        KCModule(parent, data),
         m_configuration( KSharedConfig::openConfig( QStringLiteral( "breezerc" ) ) ),
         m_changed( false )
     {
 
         // configuration
-        m_ui.setupUi( this );
+        m_ui.setupUi(widget());
 
         // track ui changes
         connect( m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
@@ -135,7 +136,7 @@ namespace Breeze
         ExceptionList exceptions;
         exceptions.readConfig( m_configuration );
         m_ui.exceptions->setExceptions( exceptions.get() );
-        setChanged( false );
+        setNeedsSave(false);
 
     }
 
@@ -198,17 +199,21 @@ namespace Breeze
 
         // sync configuration
         m_configuration->sync();
-        setChanged( false );
+        setNeedsSave(false);
 
         // needed to tell kwin to reload when running from external kcmshell
         {
-            QDBusMessage message = QDBusMessage::createSignal("/KWin", "org.kde.KWin", "reloadConfig");
+            QDBusMessage message = QDBusMessage::createSignal(QStringLiteral("/KWin"),
+                                                              QStringLiteral("org.kde.KWin"),
+                                                              QStringLiteral("reloadConfig"));
             QDBusConnection::sessionBus().send(message);
         }
 
         // needed for breeze style to reload shadows
         {
-            QDBusMessage message( QDBusMessage::createSignal("/BreezeDecoration",  "org.kde.Breeze.Style", "reparseConfiguration") );
+            QDBusMessage message(QDBusMessage::createSignal(QStringLiteral("/BreezeDecoration"),
+                                                            QStringLiteral("org.kde.Breeze.Style"),
+                                                            QStringLiteral("reparseConfiguration")));
             QDBusConnection::sessionBus().send(message);
         }
 
@@ -234,7 +239,7 @@ namespace Breeze
         m_ui.opacitySpinBox->setValue( m_internalSettings->backgroundOpacity() );
         m_ui.gradientSpinBox->setValue( m_internalSettings->backgroundGradientIntensity() );
 
-        QFont f; f.fromString("Sans,11,-1,5,50,0,0,0,0,0");
+        QFont f; f.fromString(QStringLiteral("Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1"));
         m_ui.fontComboBox->setCurrentFont( f );
         m_ui.fontSizeSpinBox->setValue( f.pointSize() );
         int w = f.weight();
@@ -344,14 +349,8 @@ namespace Breeze
             }
         }
 
-        setChanged( modified );
+        setNeedsSave(modified);
 
-    }
-
-    //_______________________________________________
-    void ConfigWidget::setChanged( bool value )
-    {
-        emit changed( value );
     }
 
 }

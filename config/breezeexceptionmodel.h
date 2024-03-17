@@ -1,5 +1,3 @@
-#ifndef breezeexceptionmodel_h
-#define breezeexceptionmodel_h
 //////////////////////////////////////////////////////////////////////////////
 // breezeexceptionmodel.h
 // -------------------
@@ -24,6 +22,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
+
+#pragma once
 
 #include "breeze.h"
 #include "breezelistmodel.h"
@@ -78,4 +78,4 @@ namespace Breeze
     };
 
 }
-#endif
+

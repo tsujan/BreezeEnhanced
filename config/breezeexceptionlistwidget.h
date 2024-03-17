@@ -1,5 +1,3 @@
-#ifndef breezeexceptionlistwidget_h
-#define breezeexceptionlistwidget_h
 //////////////////////////////////////////////////////////////////////////////
 // breezeexceptionlistwidget.h
 // -------------------
@@ -25,8 +23,10 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
-#include "ui_breezeexceptionlistwidget.h"
+#pragma once
+
 #include "breezeexceptionmodel.h"
+#include "ui_breezeexceptionlistwidget.h"
 
 //* QDialog used to commit selected files
 namespace Breeze
@@ -103,7 +103,7 @@ namespace Breeze
         virtual void setChanged( bool value )
         {
             m_changed = value;
-            emit changed( value );
+            Q_EMIT changed( value );
         }
 
         private:
@@ -121,4 +121,3 @@ namespace Breeze
 
 }
 
-#endif

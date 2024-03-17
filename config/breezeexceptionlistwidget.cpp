@@ -28,9 +28,9 @@
 
 #include <KLocalizedString>
 
+#include <QIcon>
 #include <QMessageBox>
 #include <QPointer>
-#include <QIcon>
 #include <QRegularExpression>
 
 //__________________________________________________________

@@ -42,9 +42,9 @@ namespace Breeze
         m_sortOrder = order;
 
         // emit signals and call private methods
-        emit layoutAboutToBeChanged();
+        Q_EMIT layoutAboutToBeChanged();
         privateSort( column, order );
-        emit layoutChanged();
+        Q_EMIT layoutChanged();
 
     }
 

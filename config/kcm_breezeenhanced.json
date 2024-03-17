@@ -1,0 +1,13 @@
+{
+    "KPlugin": {
+        "Description": "Modify the appearance of window decorations",
+        "Icon": "preferences-system-windows",
+        "Name": "BreezeEnhanced Window Decoration",
+        "ServiceTypes": [
+            "KCModule"
+        ]
+    },
+    "X-KDE-Keywords": "BreezeEnhanced,decoration",
+    "X-KDE-ParentApp": "kcontrol",
+    "X-KDE-Weight": 60
+}

@@ -1,23 +1,22 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
 project(breezeenhanced)
-set(PROJECT_VERSION "5.27.0")
-set(PROJECT_VERSION_MAJOR 5)
+set(PROJECT_VERSION "6.0.0")
+set(PROJECT_VERSION_MAJOR 6)
 
 include(WriteBasicConfigVersionFile)
 include(FeatureSummary)
+set(QT_MIN_VERSION "6.6.0")
+set(KF6_MIN_VERSION "6.0.0")
 
-find_package(ECM 0.0.9 REQUIRED NO_MODULE)
+find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules")
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${ECM_MODULE_PATH} ${ECM_KDE_MODULE_DIR} ${CMAKE_SOURCE_DIR}/cmake)
 
-set(QT_MIN_VERSION "5.15.0")
-set(KF5_MIN_VERSION "5.102.0")
-
 include(ECMInstallIcons)
-include(KDEInstallDirs)
+include(KDEInstallDirs6)
 include(KDECMakeSettings)
 include(KDECompilerSettings NO_POLICY_SCOPE)
 include(GenerateExportHeader)
@@ -25,13 +24,19 @@ include(GenerateExportHeader)
 
 find_package(KDecoration2 REQUIRED)
 
+find_package(KF6KCMUtils ${KF6_MIN_VERSION})
+set_package_properties(KF6KCMUtils PROPERTIES
+    TYPE REQUIRED
+    DESCRIPTION "Helps create configuration modules"
+    PURPOSE "KCMUtils used for the configuration modules or the decoration and Qt Style"
+)
 
 # old stuff
 add_definitions(-DTRANSLATION_DOMAIN="breeze_kwin_deco")
 
 
-find_package(KF5 ${KF5_MIN_VERSION} REQUIRED COMPONENTS CoreAddons GuiAddons ConfigWidgets WindowSystem I18n)
-find_package(Qt${QT_MAJOR_VERSION} ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS DBus)
+find_package(KF6 ${KF6_MIN_VERSION} REQUIRED COMPONENTS GuiAddons WindowSystem I18n)
+find_package(Qt6 ${QT_MIN_VERSION} CONFIG REQUIRED COMPONENTS Widgets DBus)
 
 ################# includes #################
 add_subdirectory(libbreezecommon)
@@ -41,14 +46,11 @@ add_subdirectory(libbreezecommon)
 set(breezeenhanced_SRCS
     breezebutton.cpp
     breezedecoration.cpp
-    breezeexceptionlist.cpp
     breezesettingsprovider.cpp)
 
-kconfig_add_kcfg_files(breezeenhanced_SRCS breezesettings.kcfgc)
-
 ### config classes
-### they are kept separately because they might move in a separate library in the future
 set(breezeenhanced_config_SRCS
+    breezeexceptionlist.cpp
     config/breezeconfigwidget.cpp
     config/breezedetectwidget.cpp
     config/breezeexceptiondialog.cpp
@@ -56,35 +58,43 @@ set(breezeenhanced_config_SRCS
     config/breezeexceptionmodel.cpp
     config/breezeitemmodel.cpp
 )
-
-set(breezeenhanced_config_PART_FORMS
+ki18n_wrap_ui(breezeenhanced_config_SRCS
    config/ui/breezeconfigurationui.ui
    config/ui/breezeexceptiondialog.ui
    config/ui/breezeexceptionlistwidget.ui
 )
-
-ki18n_wrap_ui(breezeenhanced_config_PART_FORMS_HEADERS ${breezeenhanced_config_PART_FORMS})
+add_library(breezeenhanced_STATIC STATIC ${breezeenhanced_config_SRCS})
+# Needed to link this static lib to shared libs
+set_property(TARGET breezeenhanced_STATIC PROPERTY POSITION_INDEPENDENT_CODE ON)
+kconfig_add_kcfg_files(breezeenhanced_STATIC breezesettings.kcfgc)
+target_link_libraries(breezeenhanced_STATIC
+    PUBLIC
+        Qt6::Core
+        Qt6::Gui
+        Qt6::Widgets
+        Qt6::DBus
+        KDecoration2::KDecoration
+    PRIVATE
+        KF6::I18n
+        KF6::WindowSystem
+        KF6::KCMUtils
+)
 
 ### build library
 add_library(breezeenhanced MODULE
     ${breezeenhanced_SRCS}
-    ${breezeenhanced_config_SRCS}
     ${breezeenhanced_config_PART_FORMS_HEADERS})
 
 target_link_libraries(breezeenhanced
-    PUBLIC
-        Qt::Core
-        Qt::Gui
-        Qt::DBus
     PRIVATE
-        breezeenhancedcommon5
-        KDecoration2::KDecoration
-        KF5::ConfigCore
-        KF5::CoreAddons
-        KF5::ConfigWidgets
-        KF5::GuiAddons
-        KF5::I18n
-        KF5::WindowSystem)
+        breezeenhancedcommon6
+        breezeenhanced_STATIC
+        KF6::GuiAddons
+        KF6::I18n
+        KF6::WindowSystem
+        KF6::KCMUtils)
 
-install(TARGETS breezeenhanced DESTINATION ${KDE_INSTALL_PLUGINDIR}/org.kde.kdecoration2)
-install(FILES config/breezeenhancedconfig.desktop DESTINATION  ${KDE_INSTALL_KSERVICESDIR})
+
+install(TARGETS breezeenhanced DESTINATION ${KDE_INSTALL_PLUGINDIR}/${KDECORATION_PLUGIN_DIR})
+
+add_subdirectory(config)

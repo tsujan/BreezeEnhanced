@@ -1,6 +1,3 @@
-#ifndef BREEZE_BUTTONS_H
-#define BREEZE_BUTTONS_H
-
 /*
 * Copyright 2014  Martin Gräßlin <mgraesslin@kde.org>
 * Copyright 2014  Hugo Pereira Da Costa <hugo.pereira@free.fr>
@@ -21,8 +18,11 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <KDecoration2/DecorationButton>
+
+#pragma once
+
 #include "breezedecoration.h"
+#include <KDecoration2/DecorationButton>
 
 #include <QHash>
 #include <QImage>
@@ -135,4 +135,3 @@ namespace Breeze
 
 } // namespace
 
-#endif

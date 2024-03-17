@@ -1,5 +1,3 @@
-#ifndef breezeconfigwidget_h
-#define breezeconfigwidget_h
 //////////////////////////////////////////////////////////////////////////////
 // breezeconfigurationui.h
 // -------------------
@@ -25,6 +23,8 @@
 // IN THE SOFTWARE.
 //////////////////////////////////////////////////////////////////////////////
 
+#pragma once
+
 #include "breeze.h"
 #include "breezeexceptionlistwidget.h"
 #include "breezesettings.h"
@@ -33,8 +33,8 @@
 #include <KCModule>
 #include <KSharedConfig>
 
-#include <QWidget>
 #include <QSharedPointer>
+#include <QWidget>
 
 namespace Breeze
 {
@@ -48,7 +48,7 @@ namespace Breeze
         public:
 
         //* constructor
-        explicit ConfigWidget( QWidget*, const QVariantList& );
+        explicit ConfigWidget(QObject *parent, const KPluginMetaData &data, const QVariantList &args);
 
         //* destructor
         virtual ~ConfigWidget() = default;
@@ -67,11 +67,6 @@ namespace Breeze
         //* update changed state
         virtual void updateChanged();
 
-        protected:
-
-        //* set changed state
-        void setChanged( bool );
-
         private:
 
         //* ui
@@ -89,5 +84,3 @@ namespace Breeze
     };
 
 }
-
-#endif
