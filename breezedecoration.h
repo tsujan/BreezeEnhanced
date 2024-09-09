@@ -62,8 +62,8 @@ namespace Breeze
         //* caption height
         int captionHeight() const;
 
-        //* button height
-        int buttonHeight() const;
+        //* button size
+        int buttonSize() const;
 
         //*@name colors
         //@{
@@ -133,20 +133,26 @@ namespace Breeze
 
     bool Decoration::hasBorders() const
     {
-        if( m_internalSettings && m_internalSettings->mask() & BorderSize ) return m_internalSettings->borderSize() > InternalSettings::BorderNoSides;
-        else return settings()->borderSize() > KDecoration2::BorderSize::NoSides;
+        if (m_internalSettings && m_internalSettings->mask() & BorderSize)
+            return m_internalSettings->borderSize() > InternalSettings::BorderNoSides;
+        else
+            return settings()->borderSize() > KDecoration2::BorderSize::NoSides;
     }
 
     bool Decoration::hasNoBorders() const
     {
-        if( m_internalSettings && m_internalSettings->mask() & BorderSize ) return m_internalSettings->borderSize() == InternalSettings::BorderNone;
-        else return settings()->borderSize() == KDecoration2::BorderSize::None;
+        if (m_internalSettings && m_internalSettings->mask() & BorderSize)
+            return m_internalSettings->borderSize() == InternalSettings::BorderNone;
+        else
+            return settings()->borderSize() == KDecoration2::BorderSize::None;
     }
 
     bool Decoration::hasNoSideBorders() const
     {
-        if( m_internalSettings && m_internalSettings->mask() & BorderSize ) return m_internalSettings->borderSize() == InternalSettings::BorderNoSides;
-        else return settings()->borderSize() == KDecoration2::BorderSize::NoSides;
+        if (m_internalSettings && m_internalSettings->mask() & BorderSize)
+            return m_internalSettings->borderSize() == InternalSettings::BorderNoSides;
+        else
+            return settings()->borderSize() == KDecoration2::BorderSize::NoSides;
     }
 
     bool Decoration::isMaximized() const

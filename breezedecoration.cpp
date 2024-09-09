@@ -169,7 +169,7 @@ namespace Breeze
     {
 
         const auto c = client();
-        if(hideTitleBar()) return c->color(ColorGroup::Inactive, ColorRole::TitleBar);
+        if (hideTitleBar()) return c->color(ColorGroup::Inactive, ColorRole::TitleBar);
         return c->color(c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::TitleBar);
 
     }
@@ -205,7 +205,7 @@ namespace Breeze
 
         // full reconfiguration
         connect(s.get(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::reconfigure);
-        connect(s.get(), &KDecoration2::DecorationSettings::reconfigured, SettingsProvider::self(), &SettingsProvider::reconfigure, Qt::UniqueConnection );
+        connect(s.get(), &KDecoration2::DecorationSettings::reconfigured, SettingsProvider::self(), &SettingsProvider::reconfigure, Qt::UniqueConnection);
         connect(s.get(), &KDecoration2::DecorationSettings::reconfigured, this, &Decoration::updateButtonsGeometryDelayed);
 
         connect(c, &KDecoration2::DecoratedClient::adjacentScreenEdgesChanged, this, &Decoration::recalculateBorders);
@@ -273,7 +273,7 @@ namespace Breeze
     int Decoration::borderSize(bool bottom) const
     {
         const int baseSize = settings()->smallSpacing();
-        if( m_internalSettings && (m_internalSettings->mask() & BorderSize ) )
+        if (m_internalSettings && (m_internalSettings->mask() & BorderSize))
         {
             switch (m_internalSettings->borderSize()) {
                 case InternalSettings::BorderNone: return 0;
@@ -311,7 +311,7 @@ namespace Breeze
     void Decoration::reconfigure()
     {
 
-        m_internalSettings = SettingsProvider::self()->internalSettings( this );
+        m_internalSettings = SettingsProvider::self()->internalSettings(this);
 
         setScaledCornerRadius();
 
@@ -344,7 +344,7 @@ namespace Breeze
         {
             QFont f; f.fromString(m_internalSettings->titleBarFont());
             QFontMetrics fm(f);
-            top += qMax(fm.height(), buttonHeight());
+            top += qMax(fm.height(), buttonSize());
 
             // padding below
             // extra pixel is used for the active window outline (but not in the shaded state)
@@ -515,7 +515,9 @@ namespace Breeze
 
     //________________________________________________________________
     void Decoration::updateButtonsGeometryDelayed()
-    { QTimer::singleShot( 0, this, &Decoration::updateButtonsGeometry ); }
+    {
+        QTimer::singleShot(0, this, &Decoration::updateButtonsGeometry);
+    }
 
     //________________________________________________________________
     void Decoration::updateButtonsGeometry()
@@ -524,8 +526,8 @@ namespace Breeze
 
         // adjust button position
         const int bHeight = captionHeight() + (isTopEdge() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0);
-        const int bWidth = buttonHeight();
-        const int verticalOffset = (isTopEdge() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0) + (captionHeight()-buttonHeight())/2;
+        const int bWidth = buttonSize();
+        const int verticalOffset = (isTopEdge() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0) + (captionHeight()-buttonSize())/2;
         const auto buttonList = m_leftButtons->buttons() + m_rightButtons->buttons();
         for (const QPointer<KDecoration2::DecorationButton> &button : buttonList)
         {
@@ -535,7 +537,7 @@ namespace Breeze
         }
 
         // left buttons
-        if( !m_leftButtons->buttons().isEmpty() )
+        if (!m_leftButtons->buttons().isEmpty())
         {
 
             // spacing (use our own spacing instead of s->smallSpacing()*Metrics::TitleBar_ButtonSpacing)
@@ -544,13 +546,13 @@ namespace Breeze
             // padding
             const int vPadding = isTopEdge() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
             const int hPadding = s->smallSpacing()*Metrics::TitleBar_SideMargin;
-            if( isLeftEdge() )
+            if (isLeftEdge())
             {
                 // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
                 auto button = static_cast<Button *>(m_leftButtons->buttons().front());
-                button->setGeometry( QRectF( QPoint( 0, 0 ), QSizeF( bWidth + hPadding, bHeight ) ) );
-                button->setFlag( Button::FlagFirstInList );
-                button->setHorizontalOffset( hPadding );
+                button->setGeometry(QRectF(QPoint(0, 0), QSizeF(bWidth + hPadding, bHeight)));
+                button->setFlag(Button::FlagFirstInList);
+                button->setHorizontalOffset(hPadding);
 
                 m_leftButtons->setPos(QPointF(0, vPadding));
 
@@ -559,7 +561,7 @@ namespace Breeze
         }
 
         // right buttons
-        if( !m_rightButtons->buttons().isEmpty() )
+        if (!m_rightButtons->buttons().isEmpty())
         {
 
             // spacing (use our own spacing instead of s->smallSpacing()*Metrics::TitleBar_ButtonSpacing)
@@ -568,10 +570,10 @@ namespace Breeze
             // padding
             const int vPadding = isTopEdge() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
             const int hPadding = s->smallSpacing()*Metrics::TitleBar_SideMargin;
-            if( isRightEdge() )
+            if (isRightEdge())
             {
                 auto button = static_cast<Button *>(m_rightButtons->buttons().back());
-                button->setGeometry(QRectF(QPoint(0, 0), QSizeF( bWidth + hPadding, bHeight)));
+                button->setGeometry(QRectF(QPoint(0, 0), QSizeF(bWidth + hPadding, bHeight)));
                 button->setFlag(Button::FlagLastInList);
 
                 m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width(), vPadding));
@@ -626,7 +628,7 @@ namespace Breeze
             painter->setPen(c->isActive() ? c->color(ColorGroup::Active, ColorRole::TitleBar)
                                           : c->color(ColorGroup::Inactive, ColorRole::Foreground));
 
-            painter->drawRect(rect().adjusted(0, 0, -1, -1 ));
+            painter->drawRect(rect().adjusted(0, 0, -1, -1));
             painter->restore();
         }
 
@@ -644,7 +646,7 @@ namespace Breeze
         painter->setPen(Qt::NoPen);
 
         // render a linear gradient on title area and draw a light border at the top
-        if(m_internalSettings->drawBackgroundGradient() && !flatTitleBar())
+        if (m_internalSettings->drawBackgroundGradient() && !flatTitleBar())
         {
             QColor titleBarColor(this->titleBarColor());
             titleBarColor.setAlpha(titleBarAlpha());
@@ -652,7 +654,7 @@ namespace Breeze
             QLinearGradient gradient(0, 0, 0, titleRect.height());
             QColor lightCol(titleBarColor.lighter(130 + m_internalSettings->backgroundGradientIntensity()));
             gradient.setColorAt(0.0, lightCol);
-            gradient.setColorAt(0.99 / static_cast<qreal>(titleRect.height()), lightCol );
+            gradient.setColorAt(0.99 / static_cast<qreal>(titleRect.height()), lightCol);
             gradient.setColorAt(1.0 / static_cast<qreal>(titleRect.height()),
                                 titleBarColor.lighter(100 + m_internalSettings->backgroundGradientIntensity()));
             gradient.setColorAt(1.0, titleBarColor);
@@ -675,11 +677,11 @@ namespace Breeze
         }
 
         auto s = settings();
-        if(isMaximized() || !s->isAlphaChannelSupported())
+        if (isMaximized() || !s->isAlphaChannelSupported())
         {
             painter->drawRect(titleRect);
         }
-        else if(c->isShaded())
+        else if (c->isShaded())
         {
             painter->drawRoundedRect(titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
         }
@@ -702,7 +704,7 @@ namespace Breeze
         // KDE needs this FIXME: Why?
         QFontDatabase fd; f.setStyleName(fd.styleString(f));
         painter->setFont(f);
-        painter->setPen( fontColor() );
+        painter->setPen(fontColor());
         const auto cR = captionRect();
         const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, cR.first.width());
         painter->drawText(cR.first, cR.second | Qt::TextSingleLine, caption);
@@ -713,10 +715,10 @@ namespace Breeze
     }
 
     //________________________________________________________________
-    int Decoration::buttonHeight() const
+    int Decoration::buttonSize() const
     {
         const int baseSize = settings()->gridUnit();
-        switch( m_internalSettings->buttonSize() )
+        switch (m_internalSettings->buttonSize())
         {
             case InternalSettings::ButtonTiny: return baseSize;
             case InternalSettings::ButtonSmall: return baseSize*1.5;
@@ -734,14 +736,14 @@ namespace Breeze
         const auto c = client();
         return hideTitleBar() ? borderTop()
                               : borderTop()
-                                - settings()->smallSpacing()*(Metrics::TitleBar_BottomMargin + Metrics::TitleBar_TopMargin )
+                                - settings()->smallSpacing()*(Metrics::TitleBar_BottomMargin + Metrics::TitleBar_TopMargin)
                                 - (c->isShaded() ? 0 : 1); // see recalculateBorders()
     }
 
     //________________________________________________________________
     QPair<QRect, Qt::Alignment> Decoration::captionRect() const
     {
-        if( hideTitleBar() ) return qMakePair( QRect(), Qt::AlignCenter );
+        if (hideTitleBar()) return qMakePair(QRect(), Qt::AlignCenter);
         else {
 
             const int extraTitleMargin = m_internalSettings->extraTitleMargin();
@@ -755,36 +757,36 @@ namespace Breeze
                 size().width() - m_rightButtons->geometry().x() + Metrics::TitleBar_SideMargin*settings()->smallSpacing() + extraTitleMargin;
 
             const int yOffset = settings()->smallSpacing()*Metrics::TitleBar_TopMargin;
-            const QRect maxRect( leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight() );
+            const QRect maxRect(leftOffset, yOffset, size().width() - leftOffset - rightOffset, captionHeight());
 
-            switch( m_internalSettings->titleAlignment() )
+            switch (m_internalSettings->titleAlignment())
             {
                 case InternalSettings::AlignLeft:
-                return qMakePair( maxRect, Qt::AlignVCenter|Qt::AlignLeft );
+                return qMakePair(maxRect, Qt::AlignVCenter|Qt::AlignLeft);
 
                 case InternalSettings::AlignRight:
-                return qMakePair( maxRect, Qt::AlignVCenter|Qt::AlignRight );
+                return qMakePair(maxRect, Qt::AlignVCenter|Qt::AlignRight);
 
                 case InternalSettings::AlignCenter:
-                return qMakePair( maxRect, Qt::AlignCenter );
+                return qMakePair(maxRect, Qt::AlignCenter);
 
                 default:
                 case InternalSettings::AlignCenterFullWidth:
                 {
 
                     // full caption rect
-                    const QRect fullRect = QRect( 0, yOffset, size().width(), captionHeight() );
+                    const QRect fullRect = QRect(0, yOffset, size().width(), captionHeight());
                     QFont f; f.fromString(m_internalSettings->titleBarFont());
                     QFontMetrics fm(f);
-                    QRect boundingRect( fm.boundingRect( c->caption()) );
+                    QRect boundingRect(fm.boundingRect(c->caption()));
 
                     // text bounding rect
-                    boundingRect.setTop( yOffset );
-                    boundingRect.setHeight( captionHeight() );
-                    boundingRect.moveLeft( ( size().width() - boundingRect.width() )/2 );
+                    boundingRect.setTop(yOffset);
+                    boundingRect.setHeight(captionHeight());
+                    boundingRect.moveLeft((size().width() - boundingRect.width())/2);
 
-                    if( boundingRect.left() < leftOffset ) return qMakePair( maxRect, Qt::AlignVCenter|Qt::AlignLeft );
-                    else if( boundingRect.right() > size().width() - rightOffset ) return qMakePair( maxRect, Qt::AlignVCenter|Qt::AlignRight );
+                    if (boundingRect.left() < leftOffset) return qMakePair(maxRect, Qt::AlignVCenter|Qt::AlignLeft);
+                    else if (boundingRect.right() > size().width() - rightOffset) return qMakePair(maxRect, Qt::AlignVCenter|Qt::AlignRight);
                     else return qMakePair(fullRect, Qt::AlignCenter);
 
                 }
@@ -886,7 +888,6 @@ namespace Breeze
     void Decoration::setScaledCornerRadius()
     {
         m_scaledCornerRadius = Metrics::Frame_FrameRadius*settings()->smallSpacing();
-
     }
 
 } // namespace

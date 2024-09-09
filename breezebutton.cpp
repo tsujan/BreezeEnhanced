@@ -38,28 +38,28 @@ namespace Breeze
     //__________________________________________________________________
     Button::Button(DecorationButtonType type, Decoration* decoration, QObject* parent)
         : DecorationButton(type, decoration, parent)
-        , m_animation( new QVariantAnimation( this ) )
+        , m_animation(new QVariantAnimation(this))
     {
 
         // setup animation
         // It is important start and end value are of the same type, hence 0.0 and not just 0
-        m_animation->setStartValue( 0.0 );
-        m_animation->setEndValue( 1.0 );
-        m_animation->setEasingCurve( QEasingCurve::InOutQuad );
+        m_animation->setStartValue(0.0);
+        m_animation->setEndValue(1.0);
+        m_animation->setEasingCurve(QEasingCurve::InOutQuad);
         connect(m_animation, &QVariantAnimation::valueChanged, this, [this](const QVariant &value) {
             setOpacity(value.toReal());
         });
 
 
         // setup default geometry
-        const int height = decoration->buttonHeight();
-        setGeometry(QRect(0, 0, height, height));
-        setIconSize(QSize( height, height ));
+        const int size = decoration->buttonSize();
+        setGeometry(QRect(0, 0, size, size));
+        setIconSize(QSize(size, size));
 
         // connections
         connect(decoration->client(), SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
         connect(decoration->settings().get(), &KDecoration2::DecorationSettings::reconfigured, this, &Button::reconfigure);
-        connect( this, &KDecoration2::DecorationButton::hoveredChanged, this, &Button::updateAnimationState );
+        connect(this, &KDecoration2::DecorationButton::hoveredChanged, this, &Button::updateAnimationState);
 
         reconfigure();
 
@@ -82,7 +82,7 @@ namespace Breeze
         {
             Button *b = new Button(type, d, parent);
             const auto c = d->client();
-            switch( type )
+            switch (type)
             {
 
                 case DecorationButtonType::Close:
@@ -135,16 +135,16 @@ namespace Breeze
         painter->save();
 
         // translate from offset
-        if( m_flag == FlagFirstInList ) painter->translate( m_offset );
-        else painter->translate( 0, m_offset.y() );
+        if (m_flag == FlagFirstInList) painter->translate(m_offset);
+        else painter->translate(0, m_offset.y());
 
-        if( !m_iconSize.isValid() || isStandAlone() ) m_iconSize = geometry().size().toSize();
+        if (!m_iconSize.isValid() || isStandAlone()) m_iconSize = geometry().size().toSize();
 
         // menu button
         if (type() == DecorationButtonType::Menu)
         {
 
-            const QRectF iconRect( geometry().topLeft(), m_iconSize );
+            const QRectF iconRect(geometry().topLeft(), m_iconSize);
             const auto c = decoration()->client();
             /*if (auto deco =  qobject_cast<Decoration*>(decoration())) {
                 const QPalette activePalette = KIconLoader::global()->customPalette();
@@ -164,7 +164,7 @@ namespace Breeze
 
         } else {
 
-            drawIcon( painter );
+            drawIcon(painter);
 
         }
 
@@ -173,26 +173,26 @@ namespace Breeze
     }
 
     //__________________________________________________________________
-    void Button::drawIcon( QPainter *painter ) const
+    void Button::drawIcon(QPainter *painter) const
     {
 
-        painter->setRenderHints( QPainter::Antialiasing );
+        painter->setRenderHints(QPainter::Antialiasing);
 
         /*
-        scale painter so that its window matches QRect( -1, -1, 20, 20 )
+        scale painter so that its window matches QRect(-1, -1, 20, 20)
         this makes all further rendering and scaling simpler
-        all further rendering is performed inside QRect( 0, 0, 18, 18 )
+        all further rendering is performed inside QRect(0, 0, 18, 18)
         */
-        painter->translate( geometry().topLeft() );
+        painter->translate(geometry().topLeft());
 
-        const qreal width( m_iconSize.width() );
-        painter->scale( width/20, width/20 );
-        painter->translate( 1, 1 );
+        const qreal width(m_iconSize.width());
+        painter->scale(width/20, width/20);
+        painter->translate(1, 1);
 
         // render background
-        const QColor backgroundColor( this->backgroundColor() );
+        const QColor backgroundColor(this->backgroundColor());
 
-        auto d = qobject_cast<Decoration*>( decoration() );
+        auto d = qobject_cast<Decoration*>(decoration());
         bool isInactive(d && !d->client()->isActive()
                         && !isHovered() && !isPressed()
                         && m_animation->state() != QAbstractAnimation::Running);
@@ -209,17 +209,17 @@ namespace Breeze
         }
 
         // render mark
-        const QColor foregroundColor( this->foregroundColor(inactiveCol) );
-        if( foregroundColor.isValid() )
+        const QColor foregroundColor(this->foregroundColor(inactiveCol));
+        if (foregroundColor.isValid())
         {
 
             // setup painter
-            QPen pen( foregroundColor );
-            pen.setCapStyle( Qt::RoundCap );
-            pen.setJoinStyle( Qt::MiterJoin );
-            pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
+            QPen pen(foregroundColor);
+            pen.setCapStyle(Qt::RoundCap);
+            pen.setJoinStyle(Qt::MiterJoin);
+            pen.setWidthF(PenWidth::Symbol*qMax((qreal)1.0, 20/width));
 
-            switch( type() )
+            switch (type())
             {
 
                 case DecorationButtonType::Close:
@@ -240,32 +240,32 @@ namespace Breeze
                             grad.setColorAt(1, isInactive ? inactiveCol
                                                           : QColor(230, 92, 94));
                         }
-                        painter->setBrush( QBrush(grad) );
-                        painter->setPen( Qt::NoPen );
-                        painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
-                        if( backgroundColor.isValid() )
+                        painter->setBrush(QBrush(grad));
+                        painter->setPen(Qt::NoPen);
+                        painter->drawEllipse(QRectF(2, 2, 14, 14));
+                        if (backgroundColor.isValid())
                         {
-                            painter->setPen( Qt::NoPen );
-                            painter->setBrush( backgroundColor );
+                            painter->setPen(Qt::NoPen);
+                            painter->setBrush(backgroundColor);
                             qreal r = static_cast<qreal>(7)
                                       + (isPressed() ? 0.0
                                          : static_cast<qreal>(2) * m_animation->currentValue().toReal());
                             QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
-                            painter->drawEllipse( c, r, r );
+                            painter->drawEllipse(c, r, r);
                         }
                     }
                     else {
-                        if( backgroundColor.isValid() )
+                        if (backgroundColor.isValid())
                         {
-                            painter->setPen( Qt::NoPen );
-                            painter->setBrush( backgroundColor );
-                            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+                            painter->setPen(Qt::NoPen);
+                            painter->setBrush(backgroundColor);
+                            painter->drawEllipse(QRectF(0, 0, 18, 18));
                         }
-                        painter->setPen( pen );
-                        painter->setBrush( Qt::NoBrush );
+                        painter->setPen(pen);
+                        painter->setBrush(Qt::NoBrush);
 
-                        painter->drawLine( QPointF( 5, 5 ), QPointF( 13, 13 ) );
-                        painter->drawLine( QPointF( 5, 13 ), QPointF( 13, 5 ) );
+                        painter->drawLine(QPointF(5, 5), QPointF(13, 13));
+                        painter->drawLine(QPointF(5, 13), QPointF(13, 5));
                     }
                     break;
                 }
@@ -296,32 +296,32 @@ namespace Breeze
                                                            : isInactive ? inactiveCol
                                                                         : QColor(111, 178, 60));
                         }
-                        painter->setBrush( QBrush(grad) );
-                        painter->setPen( Qt::NoPen );
-                        painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
-                        if( backgroundColor.isValid() )
+                        painter->setBrush(QBrush(grad));
+                        painter->setPen(Qt::NoPen);
+                        painter->drawEllipse(QRectF(2, 2, 14, 14));
+                        if (backgroundColor.isValid())
                         {
-                            painter->setPen( Qt::NoPen );
-                            painter->setBrush( backgroundColor );
+                            painter->setPen(Qt::NoPen);
+                            painter->setBrush(backgroundColor);
                             qreal r = static_cast<qreal>(7)
                                       + (isPressed() ? 0.0
                                          : static_cast<qreal>(2) * m_animation->currentValue().toReal());
                             QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
-                            painter->drawEllipse( c, r, r );
+                            painter->drawEllipse(c, r, r);
                         }
                     }
                     else {
-                        if( backgroundColor.isValid() )
+                        if (backgroundColor.isValid())
                         {
-                            painter->setPen( Qt::NoPen );
-                            painter->setBrush( backgroundColor );
-                            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+                            painter->setPen(Qt::NoPen);
+                            painter->setBrush(backgroundColor);
+                            painter->drawEllipse(QRectF(0, 0, 18, 18));
                         }
 
                         if (isHovered())
-                            pen.setWidthF( 1.2*qMax((qreal)1.0, 20/width ) );
-                        painter->setPen( pen );
-                        painter->setBrush( Qt::NoBrush );
+                            pen.setWidthF(1.2*qMax((qreal)1.0, 20/width));
+                        painter->setPen(pen);
+                        painter->setBrush(Qt::NoBrush);
 
                         painter->drawPolyline(QPolygonF()
                                                 << QPointF(5, 8) << QPointF(5, 13) << QPointF(10, 13));
@@ -333,7 +333,7 @@ namespace Breeze
                         }
 
                         if (isHovered())
-                            pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
+                            pen.setWidthF(PenWidth::Symbol*qMax((qreal)1.0, 20/width));
                     }
                     break;
                 }
@@ -356,37 +356,37 @@ namespace Breeze
                             grad.setColorAt(1, isInactive ? inactiveCol
                                                           : QColor(217, 181, 74));
                         }
-                        painter->setBrush( QBrush(grad) );
-                        painter->setPen( Qt::NoPen );
-                        painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
-                        if( backgroundColor.isValid() )
+                        painter->setBrush(QBrush(grad));
+                        painter->setPen(Qt::NoPen);
+                        painter->drawEllipse(QRectF(2, 2, 14, 14));
+                        if (backgroundColor.isValid())
                         {
-                            painter->setPen( Qt::NoPen );
-                            painter->setBrush( backgroundColor );
+                            painter->setPen(Qt::NoPen);
+                            painter->setBrush(backgroundColor);
                             qreal r = static_cast<qreal>(7)
                                       + (isPressed() ? 0.0
                                          : static_cast<qreal>(2) * m_animation->currentValue().toReal());
                             QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
-                            painter->drawEllipse( c, r, r );
+                            painter->drawEllipse(c, r, r);
                         }
                     }
                     else {
-                        if( backgroundColor.isValid() )
+                        if (backgroundColor.isValid())
                         {
-                            painter->setPen( Qt::NoPen );
-                            painter->setBrush( backgroundColor );
-                            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+                            painter->setPen(Qt::NoPen);
+                            painter->setBrush(backgroundColor);
+                            painter->drawEllipse(QRectF(0, 0, 18, 18));
                         }
 
                         if (isHovered())
-                            pen.setWidthF( 1.2*qMax((qreal)1.0, 20/width ) );
-                        painter->setPen( pen );
-                        painter->setBrush( Qt::NoBrush );
+                            pen.setWidthF(1.2*qMax((qreal)1.0, 20/width));
+                        painter->setPen(pen);
+                        painter->setBrush(Qt::NoBrush);
 
-                        painter->drawLine( QPointF( 4, 9 ), QPointF( 14, 9 ) );
+                        painter->drawLine(QPointF(4, 9), QPointF(14, 9));
 
                         if (isHovered())
-                            pen.setWidthF( PenWidth::Symbol*qMax((qreal)1.0, 20/width ) );
+                            pen.setWidthF(PenWidth::Symbol*qMax((qreal)1.0, 20/width));
                     }
                     break;
                 }
@@ -410,61 +410,61 @@ namespace Breeze
                             grad.setColorAt(1, isInactive ? inactiveCol
                                                           : QColor(122, 151, 200));
                         }
-                        painter->setBrush( QBrush(grad) );
-                        painter->setPen( Qt::NoPen );
+                        painter->setBrush(QBrush(grad));
+                        painter->setPen(Qt::NoPen);
                         if (isChecked())
-                            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+                            painter->drawEllipse(QRectF(0, 0, 18, 18));
                         else {
-                            painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
-                            if( backgroundColor.isValid() )
+                            painter->drawEllipse(QRectF(2, 2, 14, 14));
+                            if (backgroundColor.isValid())
                             {
-                                painter->setPen( Qt::NoPen );
-                                painter->setBrush( backgroundColor );
+                                painter->setPen(Qt::NoPen);
+                                painter->setBrush(backgroundColor);
                                 qreal r = static_cast<qreal>(7)
                                           + static_cast<qreal>(2) * m_animation->currentValue().toReal();
                                 QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
-                                painter->drawEllipse( c, r, r );
+                                painter->drawEllipse(c, r, r);
                             }
                         }
                     }
                     if (!macOSBtn || isPressed() || isHovered() || isChecked()) {
-                        painter->setPen( Qt::NoPen );
-                        if( (!macOSBtn  || isPressed()) && backgroundColor.isValid() )
+                        painter->setPen(Qt::NoPen);
+                        if ((!macOSBtn  || isPressed()) && backgroundColor.isValid())
                         {
-                            painter->setBrush( backgroundColor );
-                            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+                            painter->setBrush(backgroundColor);
+                            painter->drawEllipse(QRectF(0, 0, 18, 18));
                         }
-                        painter->setBrush( foregroundColor );
+                        painter->setBrush(foregroundColor);
 
                         if (macOSBtn)
-                            painter->drawEllipse( QRectF( 6, 6, 6, 6 ) );
+                            painter->drawEllipse(QRectF(6, 6, 6, 6));
                         else {
-                            if( isChecked()) {
+                            if (isChecked()) {
 
                                 // outer ring
-                                painter->drawEllipse( QRectF( 3, 3, 12, 12 ) );
+                                painter->drawEllipse(QRectF(3, 3, 12, 12));
 
                                 // center dot
-                                QColor backgroundColor( this->backgroundColor() );
-                                if( !backgroundColor.isValid() && d ) backgroundColor = d->titleBarColor();
+                                QColor backgroundColor(this->backgroundColor());
+                                if (!backgroundColor.isValid() && d) backgroundColor = d->titleBarColor();
 
-                                if( backgroundColor.isValid() )
+                                if (backgroundColor.isValid())
                                 {
-                                    painter->setBrush( backgroundColor );
-                                    painter->drawEllipse( QRectF( 8, 8, 2, 2 ) );
+                                    painter->setBrush(backgroundColor);
+                                    painter->drawEllipse(QRectF(8, 8, 2, 2));
                                 }
 
-                            } else {
+                            }
+                            else {
+                                painter->drawPolygon(QPolygonF()
+                                    << QPointF(6.5, 8.5)
+                                    << QPointF(12, 3)
+                                    << QPointF(15, 6)
+                                    << QPointF(9.5, 11.5));
 
-                                painter->drawPolygon( QPolygonF()
-                                    << QPointF( 6.5, 8.5 )
-                                    << QPointF( 12, 3 )
-                                    << QPointF( 15, 6 )
-                                    << QPointF( 9.5, 11.5 ) );
-
-                                painter->setPen( pen );
-                                painter->drawLine( QPointF( 5.5, 7.5 ), QPointF( 10.5, 12.5 ) );
-                                painter->drawLine( QPointF( 12, 6 ), QPointF( 4.5, 13.5 ) );
+                                painter->setPen(pen);
+                                painter->drawLine(QPointF(5.5, 7.5), QPointF(10.5, 12.5));
+                                painter->drawLine(QPointF(12, 6), QPointF(4.5, 13.5));
                             }
                         }
                     }
@@ -490,45 +490,46 @@ namespace Breeze
                             grad.setColorAt(1, isInactive ? inactiveCol
                                                           : QColor(122, 151, 200));
                         }
-                        painter->setBrush( QBrush(grad) );
-                        painter->setPen( Qt::NoPen );
+                        painter->setBrush(QBrush(grad));
+                        painter->setPen(Qt::NoPen);
                         if (isChecked())
-                            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+                            painter->drawEllipse(QRectF(0, 0, 18, 18));
                         else {
-                            painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
-                            if( backgroundColor.isValid() )
+                            painter->drawEllipse(QRectF(2, 2, 14, 14));
+                            if (backgroundColor.isValid())
                             {
-                                painter->setPen( Qt::NoPen );
-                                painter->setBrush( backgroundColor );
+                                painter->setPen(Qt::NoPen);
+                                painter->setBrush(backgroundColor);
                                 qreal r = static_cast<qreal>(7)
                                           + static_cast<qreal>(2) * m_animation->currentValue().toReal();
                                 QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
-                                painter->drawEllipse( c, r, r );
+                                painter->drawEllipse(c, r, r);
                             }
                         }
                     }
                     if (!macOSBtn || isPressed() || isHovered() || isChecked()) {
-                        if( (!macOSBtn  || isPressed()) && backgroundColor.isValid() )
+                        if ((!macOSBtn  || isPressed()) && backgroundColor.isValid())
                         {
-                            painter->setPen( Qt::NoPen );
-                            painter->setBrush( backgroundColor );
-                            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+                            painter->setPen(Qt::NoPen);
+                            painter->setBrush(backgroundColor);
+                            painter->drawEllipse(QRectF(0, 0, 18, 18));
                         }
-                        painter->setPen( pen );
-                        painter->setBrush( Qt::NoBrush );
+                        painter->setPen(pen);
+                        painter->setBrush(Qt::NoBrush);
 
-                        painter->drawLine( 5, 6, 13, 6 );
+                        painter->drawLine(5, 6, 13, 6);
                         if (isChecked()) {
-                            painter->drawPolyline( QPolygonF()
-                                << QPointF( 5, 9 )
-                                << QPointF( 9, 13 )
-                                << QPointF( 13, 9 ) );
+                            painter->drawPolyline(QPolygonF()
+                                << QPointF(5, 9)
+                                << QPointF(9, 13)
+                                << QPointF(13, 9));
 
-                        } else {
-                            painter->drawPolyline( QPolygonF()
-                                << QPointF( 5, 13 )
-                                << QPointF( 9, 9 )
-                                << QPointF( 13, 13 ) );
+                        }
+                        else {
+                            painter->drawPolyline(QPolygonF()
+                                << QPointF(5, 13)
+                                << QPointF(9, 9)
+                                << QPointF(13, 13));
                         }
                     }
 
@@ -555,54 +556,54 @@ namespace Breeze
                             grad.setColorAt(1, isInactive ? inactiveCol
                                                           : QColor(122, 151, 200));
                         }
-                        painter->setBrush( QBrush(grad) );
-                        painter->setPen( Qt::NoPen );
+                        painter->setBrush(QBrush(grad));
+                        painter->setPen(Qt::NoPen);
                         if (isChecked())
-                            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+                            painter->drawEllipse(QRectF(0, 0, 18, 18));
                         else {
-                            painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
-                            if( backgroundColor.isValid() )
+                            painter->drawEllipse(QRectF(2, 2, 14, 14));
+                            if (backgroundColor.isValid())
                             {
-                                painter->setPen( Qt::NoPen );
-                                painter->setBrush( backgroundColor );
+                                painter->setPen(Qt::NoPen);
+                                painter->setBrush(backgroundColor);
                                 qreal r = static_cast<qreal>(7)
                                           + static_cast<qreal>(2) * m_animation->currentValue().toReal();
                                 QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
-                                painter->drawEllipse( c, r, r );
+                                painter->drawEllipse(c, r, r);
                             }
                         }
                     }
                     if (!macOSBtn || isPressed() || isHovered() || isChecked()) {
-                        if( (!macOSBtn  || isPressed()) && backgroundColor.isValid() )
+                        if ((!macOSBtn  || isPressed()) && backgroundColor.isValid())
                         {
-                            painter->setPen( Qt::NoPen );
-                            painter->setBrush( backgroundColor );
-                            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+                            painter->setPen(Qt::NoPen);
+                            painter->setBrush(backgroundColor);
+                            painter->drawEllipse(QRectF(0, 0, 18, 18));
                         }
-                        painter->setPen( pen );
-                        painter->setBrush( Qt::NoBrush );
+                        painter->setPen(pen);
+                        painter->setBrush(Qt::NoBrush);
 
                         if (macOSBtn) {
-                            painter->drawPolyline( QPolygonF()
-                                << QPointF( 6, 6 )
-                                << QPointF( 9, 9 )
-                                << QPointF( 12, 6 ) );
+                            painter->drawPolyline(QPolygonF()
+                                << QPointF(6, 6)
+                                << QPointF(9, 9)
+                                << QPointF(12, 6));
 
-                            painter->drawPolyline( QPolygonF()
-                                << QPointF( 6, 10 )
-                                << QPointF( 9, 13 )
-                                << QPointF( 12, 10 ) );
+                            painter->drawPolyline(QPolygonF()
+                                << QPointF(6, 10)
+                                << QPointF(9, 13)
+                                << QPointF(12, 10));
                         }
                         else {
-                            painter->drawPolyline( QPolygonF()
-                                << QPointF( 5, 5 )
-                                << QPointF( 9, 9 )
-                                << QPointF( 13, 5 ) );
+                            painter->drawPolyline(QPolygonF()
+                                << QPointF(5, 5)
+                                << QPointF(9, 9)
+                                << QPointF(13, 5));
 
-                            painter->drawPolyline( QPolygonF()
-                                << QPointF( 5, 9 )
-                                << QPointF( 9, 13 )
-                                << QPointF( 13, 9 ) );
+                            painter->drawPolyline(QPolygonF()
+                                << QPointF(5, 9)
+                                << QPointF(9, 13)
+                                << QPointF(13, 9));
                         }
                     }
                     break;
@@ -628,54 +629,54 @@ namespace Breeze
                             grad.setColorAt(1, isInactive ? inactiveCol
                                                           : QColor(122, 151, 200));
                         }
-                        painter->setBrush( QBrush(grad) );
-                        painter->setPen( Qt::NoPen );
+                        painter->setBrush(QBrush(grad));
+                        painter->setPen(Qt::NoPen);
                         if (isChecked())
-                            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+                            painter->drawEllipse(QRectF(0, 0, 18, 18));
                         else {
-                            painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
-                            if( backgroundColor.isValid() )
+                            painter->drawEllipse(QRectF(2, 2, 14, 14));
+                            if (backgroundColor.isValid())
                             {
-                                painter->setPen( Qt::NoPen );
-                                painter->setBrush( backgroundColor );
+                                painter->setPen(Qt::NoPen);
+                                painter->setBrush(backgroundColor);
                                 qreal r = static_cast<qreal>(7)
                                           + static_cast<qreal>(2) * m_animation->currentValue().toReal();
                                 QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
-                                painter->drawEllipse( c, r, r );
+                                painter->drawEllipse(c, r, r);
                             }
                         }
                     }
                     if (!macOSBtn || isPressed() || isHovered() || isChecked()) {
-                        if( (!macOSBtn  || isPressed()) && backgroundColor.isValid() )
+                        if ((!macOSBtn  || isPressed()) && backgroundColor.isValid())
                         {
-                            painter->setPen( Qt::NoPen );
-                            painter->setBrush( backgroundColor );
-                            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+                            painter->setPen(Qt::NoPen);
+                            painter->setBrush(backgroundColor);
+                            painter->drawEllipse(QRectF(0, 0, 18, 18));
                         }
-                        painter->setPen( pen );
-                        painter->setBrush( Qt::NoBrush );
+                        painter->setPen(pen);
+                        painter->setBrush(Qt::NoBrush);
 
                         if (macOSBtn) {
-                            painter->drawPolyline( QPolygonF()
-                                << QPointF( 6, 8 )
-                                << QPointF( 9, 5 )
-                                << QPointF( 12, 8 ) );
+                            painter->drawPolyline(QPolygonF()
+                                << QPointF(6, 8)
+                                << QPointF(9, 5)
+                                << QPointF(12, 8));
 
-                            painter->drawPolyline( QPolygonF()
-                                << QPointF( 6, 12 )
-                                << QPointF( 9, 9 )
-                                << QPointF( 12, 12 ) );
+                            painter->drawPolyline(QPolygonF()
+                                << QPointF(6, 12)
+                                << QPointF(9, 9)
+                                << QPointF(12, 12));
                         }
                         else {
-                            painter->drawPolyline( QPolygonF()
-                                << QPointF( 5, 9 )
-                                << QPointF( 9, 5 )
-                                << QPointF( 13, 9 ) );
+                            painter->drawPolyline(QPolygonF()
+                                << QPointF(5, 9)
+                                << QPointF(9, 5)
+                                << QPointF(13, 9));
 
-                            painter->drawPolyline( QPolygonF()
-                                << QPointF( 5, 13 )
-                                << QPointF( 9, 9 )
-                                << QPointF( 13, 13 ) );
+                            painter->drawPolyline(QPolygonF()
+                                << QPointF(5, 13)
+                                << QPointF(9, 9)
+                                << QPointF(13, 13));
                         }
                     }
                     break;
@@ -701,38 +702,38 @@ namespace Breeze
                             grad.setColorAt(1, isInactive ? inactiveCol
                                                           : QColor(230, 131, 92));
                         }
-                        painter->setBrush( QBrush(grad) );
-                        painter->setPen( Qt::NoPen );
-                        painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
-                        if( backgroundColor.isValid() )
+                        painter->setBrush(QBrush(grad));
+                        painter->setPen(Qt::NoPen);
+                        painter->drawEllipse(QRectF(2, 2, 14, 14));
+                        if (backgroundColor.isValid())
                         {
-                            painter->setPen( Qt::NoPen );
-                            painter->setBrush( backgroundColor );
+                            painter->setPen(Qt::NoPen);
+                            painter->setBrush(backgroundColor);
                             qreal r = static_cast<qreal>(7)
                                       + static_cast<qreal>(2) * m_animation->currentValue().toReal();
                             QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
-                            painter->drawEllipse( c, r, r );
+                            painter->drawEllipse(c, r, r);
                         }
                     }
                     if (!macOSBtn || isPressed() || isHovered()) {
-                        if( (!macOSBtn  || isPressed()) && backgroundColor.isValid() )
+                        if ((!macOSBtn  || isPressed()) && backgroundColor.isValid())
                         {
-                            painter->setPen( Qt::NoPen );
-                            painter->setBrush( backgroundColor );
-                            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+                            painter->setPen(Qt::NoPen);
+                            painter->setBrush(backgroundColor);
+                            painter->drawEllipse(QRectF(0, 0, 18, 18));
                         }
-                        painter->setPen( pen );
-                        painter->setBrush( Qt::NoBrush );
+                        painter->setPen(pen);
+                        painter->setBrush(Qt::NoBrush);
 
                         if (macOSBtn) {
-                            painter->drawLine( QPointF( 4.5, 6 ), QPointF( 13.5, 6 ) );
-                            painter->drawLine( QPointF( 4.5, 9 ), QPointF( 13.5, 9 ) );
-                            painter->drawLine( QPointF( 4.5, 12 ), QPointF( 13.5, 12 ) );
+                            painter->drawLine(QPointF(4.5, 6), QPointF(13.5, 6));
+                            painter->drawLine(QPointF(4.5, 9), QPointF(13.5, 9));
+                            painter->drawLine(QPointF(4.5, 12), QPointF(13.5, 12));
                         }
                         else {
-                            painter->drawLine( QPointF( 3.5, 5 ), QPointF( 14.5, 5 ) );
-                            painter->drawLine( QPointF( 3.5, 9 ), QPointF( 14.5, 9 ) );
-                            painter->drawLine( QPointF( 3.5, 13 ), QPointF( 14.5, 13 ) );
+                            painter->drawLine(QPointF(3.5, 5), QPointF(14.5, 5));
+                            painter->drawLine(QPointF(3.5, 9), QPointF(14.5, 9));
+                            painter->drawLine(QPointF(3.5, 13), QPointF(14.5, 13));
                         }
                     }
                     break;
@@ -757,36 +758,36 @@ namespace Breeze
                             grad.setColorAt(1, isInactive ? inactiveCol
                                                           : QColor(122, 151, 200));
                         }
-                        painter->setBrush( QBrush(grad) );
-                        painter->setPen( Qt::NoPen );
-                        painter->drawEllipse( QRectF( 2, 2, 14, 14 ) );
-                        if( backgroundColor.isValid() )
+                        painter->setBrush(QBrush(grad));
+                        painter->setPen(Qt::NoPen);
+                        painter->drawEllipse(QRectF(2, 2, 14, 14));
+                        if (backgroundColor.isValid())
                         {
-                            painter->setPen( Qt::NoPen );
-                            painter->setBrush( backgroundColor );
+                            painter->setPen(Qt::NoPen);
+                            painter->setBrush(backgroundColor);
                             qreal r = static_cast<qreal>(7)
                                       + static_cast<qreal>(2) * m_animation->currentValue().toReal();
                             QPointF c(static_cast<qreal>(9), static_cast<qreal>(9));
-                            painter->drawEllipse( c, r, r );
+                            painter->drawEllipse(c, r, r);
                         }
                     }
                     if (!macOSBtn || isPressed() || isHovered()) {
-                        if( (!macOSBtn  || isPressed()) && backgroundColor.isValid() )
+                        if ((!macOSBtn  || isPressed()) && backgroundColor.isValid())
                         {
-                            painter->setPen( Qt::NoPen );
-                            painter->setBrush( backgroundColor );
-                            painter->drawEllipse( QRectF( 0, 0, 18, 18 ) );
+                            painter->setPen(Qt::NoPen);
+                            painter->setBrush(backgroundColor);
+                            painter->drawEllipse(QRectF(0, 0, 18, 18));
                         }
-                        painter->setPen( pen );
-                        painter->setBrush( Qt::NoBrush );
+                        painter->setPen(pen);
+                        painter->setBrush(Qt::NoBrush);
 
                         QPainterPath path;
-                        path.moveTo( 5, 6 );
-                        path.arcTo( QRectF( 5, 3.5, 8, 5 ), 180, -180 );
-                        path.cubicTo( QPointF(12.5, 9.5), QPointF( 9, 7.5 ), QPointF( 9, 11.5 ) );
-                        painter->drawPath( path );
+                        path.moveTo(5, 6);
+                        path.arcTo(QRectF(5, 3.5, 8, 5), 180, -180);
+                        path.cubicTo(QPointF(12.5, 9.5), QPointF(9, 7.5), QPointF(9, 11.5));
+                        painter->drawPath(path);
 
-                        painter->drawPoint( 9, 15 );
+                        painter->drawPoint(9, 15);
                     }
 
                     break;
@@ -803,8 +804,8 @@ namespace Breeze
     //__________________________________________________________________
     QColor Button::foregroundColor(const QColor& inactiveCol) const
     {
-        auto d = qobject_cast<Decoration*>( decoration() );
-        if(!d || d->internalSettings()->macOSButtons()) {
+        auto d = qobject_cast<Decoration*>(decoration());
+        if (!d || d->internalSettings()->macOSButtons()) {
             QColor col;
             if (d && !d->client()->isActive()
                 && !isHovered() && !isPressed()
@@ -824,27 +825,27 @@ namespace Breeze
             }
             return col;
         }
-        else if( !d ) {
+        else if (!d) {
 
             return QColor();
 
-        } else if( isPressed() ) {
+        } else if (isPressed()) {
 
             return d->titleBarColor();
 
-        /*} else if( type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton() ) {
+        /*} else if (type() == DecorationButtonType::Close && d->internalSettings()->outlineCloseButton()) {
 
             return d->titleBarColor();*/
 
-        } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove ) && isChecked() ) {
+        } else if ((type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove) && isChecked()) {
 
             return d->titleBarColor();
 
-        } else if( m_animation->state() == QAbstractAnimation::Running ) {
+        } else if (m_animation->state() == QAbstractAnimation::Running) {
 
-            return KColorUtils::mix( d->fontColor(), d->titleBarColor(), m_opacity );
+            return KColorUtils::mix(d->fontColor(), d->titleBarColor(), m_opacity);
 
-        } else if( isHovered() ) {
+        } else if (isHovered()) {
 
             return d->titleBarColor();
 
@@ -859,39 +860,39 @@ namespace Breeze
     //__________________________________________________________________
     QColor Button::backgroundColor() const
     {
-        auto d = qobject_cast<Decoration*>( decoration() );
-        if( !d ) {
+        auto d = qobject_cast<Decoration*>(decoration());
+        if (!d) {
 
             return QColor();
 
         }
 
         if (d->internalSettings()->macOSButtons()) {
-            if( isPressed() ) {
+            if (isPressed()) {
 
                 QColor col;
-                if( type() == DecorationButtonType::Close )
+                if (type() == DecorationButtonType::Close)
                 {
                     if (qGray(d->titleBarColor().rgb()) > 100)
                         col = QColor(254, 73, 66);
                     else
                         col = QColor(240, 77, 80);
                 }
-                else if( type() == DecorationButtonType::Maximize)
+                else if (type() == DecorationButtonType::Maximize)
                 {
                     if (qGray(d->titleBarColor().rgb()) > 100)
                         col = isChecked() ? QColor(0, 188, 154) : QColor(7, 201, 33);
                     else
                         col = isChecked() ? QColor(0, 188, 154) : QColor(101, 188, 34);
                 }
-                else if( type() == DecorationButtonType::Minimize )
+                else if (type() == DecorationButtonType::Minimize)
                 {
                     if (qGray(d->titleBarColor().rgb()) > 100)
                         col = QColor(233, 160, 13);
                     else
                         col = QColor(227, 185, 59);
                 }
-                else if( type() == DecorationButtonType::ApplicationMenu ) {
+                else if (type() == DecorationButtonType::ApplicationMenu) {
                     if (qGray(d->titleBarColor().rgb()) > 100)
                         col = QColor(220, 124, 64);
                     else
@@ -905,33 +906,33 @@ namespace Breeze
                 }
                 if (col.isValid())
                     return col;
-                else return KColorUtils::mix( d->titleBarColor(), d->fontColor(), 0.3 );
+                else return KColorUtils::mix(d->titleBarColor(), d->fontColor(), 0.3);
 
-            } else if( m_animation->state() == QAbstractAnimation::Running ) {
+            } else if (m_animation->state() == QAbstractAnimation::Running) {
 
                 QColor col;
-                if( type() == DecorationButtonType::Close )
+                if (type() == DecorationButtonType::Close)
                 {
                     if (qGray(d->titleBarColor().rgb()) > 100)
                         col = QColor(254, 95, 87);
                     else
                         col = QColor(240, 96, 97);
                 }
-                else if( type() == DecorationButtonType::Maximize)
+                else if (type() == DecorationButtonType::Maximize)
                 {
                     if (qGray(d->titleBarColor().rgb()) > 100)
                         col = isChecked() ? QColor(64, 188, 168) : QColor(39, 201, 63);
                     else
                         col = isChecked() ? QColor(64, 188, 168) : QColor(116, 188, 64);
                 }
-                else if( type() == DecorationButtonType::Minimize )
+                else if (type() == DecorationButtonType::Minimize)
                 {
                     if (qGray(d->titleBarColor().rgb()) > 100)
                         col = QColor(233, 172, 41);
                     else
                         col = QColor(227, 191, 78);
                 }
-                else if( type() == DecorationButtonType::ApplicationMenu ) {
+                else if (type() == DecorationButtonType::ApplicationMenu) {
                     if (qGray(d->titleBarColor().rgb()) > 100)
                         col = QColor(220, 124, 64);
                     else
@@ -948,36 +949,36 @@ namespace Breeze
                 else {
 
                     col = d->fontColor();
-                    col.setAlpha( col.alpha()*m_opacity );
+                    col.setAlpha(col.alpha()*m_opacity);
                     return col;
 
                 }
 
-            } else if( isHovered() ) {
+            } else if (isHovered()) {
 
                 QColor col;
-                if( type() == DecorationButtonType::Close )
+                if (type() == DecorationButtonType::Close)
                 {
                     if (qGray(d->titleBarColor().rgb()) > 100)
                         col = QColor(254, 95, 87);
                     else
                         col = QColor(240, 96, 97);
                 }
-                else if( type() == DecorationButtonType::Maximize)
+                else if (type() == DecorationButtonType::Maximize)
                 {
                     if (qGray(d->titleBarColor().rgb()) > 100)
                         col = isChecked() ? QColor(64, 188, 168) : QColor(39, 201, 63);
                     else
                         col = isChecked() ? QColor(64, 188, 168) : QColor(116, 188, 64);
                 }
-                else if( type() == DecorationButtonType::Minimize )
+                else if (type() == DecorationButtonType::Minimize)
                 {
                     if (qGray(d->titleBarColor().rgb()) > 100)
                         col = QColor(233, 172, 41);
                     else
                         col = QColor(227, 191, 78);
                 }
-                else if( type() == DecorationButtonType::ApplicationMenu ) {
+                else if (type() == DecorationButtonType::ApplicationMenu) {
                     if (qGray(d->titleBarColor().rgb()) > 100)
                         col = QColor(220, 124, 64);
                     else
@@ -1001,9 +1002,9 @@ namespace Breeze
         }
         else {
             auto c = d->client();
-            if( isPressed() ) {
+            if (isPressed()) {
 
-                if( type() == DecorationButtonType::Close ) return c->color( ColorGroup::Warning, ColorRole::Foreground );
+                if (type() == DecorationButtonType::Close) return c->color(ColorGroup::Warning, ColorRole::Foreground);
                 else
                 {
                     QColor col;
@@ -1014,7 +1015,7 @@ namespace Breeze
                     return col;
                 }
 
-            } else if( ( type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove ) && isChecked() ) {
+            } else if ((type() == DecorationButtonType::KeepBelow || type() == DecorationButtonType::KeepAbove) && isChecked()) {
 
                     QColor col;
                     if (qGray(d->titleBarColor().rgb()) > 100)
@@ -1023,13 +1024,13 @@ namespace Breeze
                         col = QColor(255, 255, 255, 180);
                     return col;
 
-            } else if( m_animation->state() == QAbstractAnimation::Running ) {
+            } else if (m_animation->state() == QAbstractAnimation::Running) {
 
-                if( type() == DecorationButtonType::Close )
+                if (type() == DecorationButtonType::Close)
                 {
 
-                    QColor color( c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter() );
-                    color.setAlpha( color.alpha()*m_opacity );
+                    QColor color(c->color(ColorGroup::Warning, ColorRole::Foreground).lighter());
+                    color.setAlpha(color.alpha()*m_opacity);
                     return color;
 
                 } else {
@@ -1039,14 +1040,14 @@ namespace Breeze
                         col = QColor(0, 0, 0, 165);
                     else
                         col = QColor(255, 255, 255, 180);
-                    col.setAlpha( col.alpha()*m_opacity );
+                    col.setAlpha(col.alpha()*m_opacity);
                     return col;
 
                 }
 
-            } else if( isHovered() ) {
+            } else if (isHovered()) {
 
-                if( type() == DecorationButtonType::Close ) return c->color( ColorGroup::Warning, ColorRole::Foreground ).lighter();
+                if (type() == DecorationButtonType::Close) return c->color(ColorGroup::Warning, ColorRole::Foreground).lighter();
                 else
                 {
 
@@ -1074,22 +1075,22 @@ namespace Breeze
 
         // animation
         auto d = qobject_cast<Decoration*>(decoration());
-        if( d )  m_animation->setDuration( d->internalSettings()->animationsDuration() );
+        if (d)  m_animation->setDuration(d->internalSettings()->animationsDuration());
 
     }
 
     //__________________________________________________________________
-    void Button::updateAnimationState( bool hovered )
+    void Button::updateAnimationState(bool hovered)
     {
 
         auto d = qobject_cast<Decoration*>(decoration());
-        if( !(d && d->internalSettings()->animationsEnabled() ) ) return;
+        if (!(d && d->internalSettings()->animationsEnabled())) return;
 
         QAbstractAnimation::Direction dir = hovered ? QAbstractAnimation::Forward : QAbstractAnimation::Backward;
-        if( m_animation->state() == QAbstractAnimation::Running && m_animation->direction() != dir )
+        if (m_animation->state() == QAbstractAnimation::Running && m_animation->direction() != dir)
             m_animation->stop();
-        m_animation->setDirection( dir );
-        if( m_animation->state() != QAbstractAnimation::Running ) m_animation->start();
+        m_animation->setDirection(dir);
+        if (m_animation->state() != QAbstractAnimation::Running) m_animation->start();
 
     }
 

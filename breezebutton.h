@@ -60,39 +60,54 @@ namespace Breeze
         };
 
         //* flag
-        void setFlag( Flag value )
-        { m_flag = value; }
+        void setFlag(Flag value)
+        {
+            m_flag = value;
+        }
 
         //* standalone buttons
-        bool isStandAlone() const { return m_flag == FlagStandalone; }
+        bool isStandAlone() const
+        {
+            return m_flag == FlagStandalone;
+        }
 
         //* offset
-        void setOffset( const QPointF& value )
-        { m_offset = value; }
+        void setOffset(const QPointF& value)
+        {
+            m_offset = value;
+        }
 
         //* horizontal offset, for rendering
-        void setHorizontalOffset( qreal value )
-        { m_offset.setX( value ); }
+        void setHorizontalOffset(qreal value)
+        {
+            m_offset.setX(value);
+        }
 
         //* vertical offset, for rendering
-        void setVerticalOffset( qreal value )
-        { m_offset.setY( value ); }
+        void setVerticalOffset(qreal value)
+        {
+            m_offset.setY(value);
+        }
 
         //* set icon size
-        void setIconSize( const QSize& value )
-        { m_iconSize = value; }
+        void setIconSize(const QSize& value)
+        {
+            m_iconSize = value;
+        }
 
         //*@name active state change animation
         //@{
-        void setOpacity( qreal value )
+        void setOpacity(qreal value)
         {
-            if( m_opacity == value ) return;
+            if (m_opacity == value) return;
             m_opacity = value;
             update();
         }
 
         qreal opacity() const
-        { return m_opacity; }
+        {
+            return m_opacity;
+        }
 
         //@}
 
@@ -110,7 +125,7 @@ namespace Breeze
         explicit Button(KDecoration2::DecorationButtonType type, Decoration *decoration, QObject *parent = nullptr);
 
         //* draw button icon
-        void drawIcon( QPainter *) const;
+        void drawIcon(QPainter *) const;
 
         //*@name colors
         //@{
