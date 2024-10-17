@@ -58,7 +58,11 @@ namespace Breeze
         connect( m_ui.fontComboBox, &QFontComboBox::currentFontChanged, [this] { updateChanged(); } );
         connect( m_ui.fontSizeSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
         connect(m_ui.weightComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this] { updateChanged(); } );
+#if (QT_VERSION >= QT_VERSION_CHECK(6,7,0))
+        connect( m_ui.italicCheckBox, &QCheckBox::checkStateChanged, [this] { updateChanged(); } );
+#else
         connect( m_ui.italicCheckBox, &QCheckBox::stateChanged, [this] { updateChanged(); } );
+#endif
 
         // track animations changes
         connect( m_ui.animationsEnabled, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
