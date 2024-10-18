@@ -2,6 +2,7 @@ V6.2
 ---------
  * Bumped the version to 6.2 and imported some changes from Breeze 6.2.0.
  * Silenced a compilation warning.
+ * Code cleanup.
 
 V6.1
 ---------

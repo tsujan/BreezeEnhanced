@@ -46,35 +46,35 @@ namespace Breeze
         m_ui.setupUi(widget());
 
         // track ui changes
-        connect( m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.buttonSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.titleMarginSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
-        connect( m_ui.btnSpacingSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
-        connect( m_ui.drawBackgroundGradient, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
-        connect( m_ui.macOSButtons, SIGNAL(clicked()), SLOT(updateChanged()) );
-        connect( m_ui.opacitySpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
-        connect( m_ui.gradientSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
+        connect(m_ui.titleAlignment, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+        connect(m_ui.buttonSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+        connect(m_ui.titleMarginSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [this](int /*i*/) {updateChanged();});
+        connect(m_ui.btnSpacingSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [this](int /*i*/) {updateChanged();});
+        connect(m_ui.drawBackgroundGradient, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged);
+        connect(m_ui.macOSButtons, SIGNAL(clicked()), SLOT(updateChanged()) );
+        connect(m_ui.opacitySpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [this](int /*i*/) {updateChanged();});
+        connect(m_ui.gradientSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [this](int /*i*/) {updateChanged();});
 
-        connect( m_ui.fontComboBox, &QFontComboBox::currentFontChanged, [this] { updateChanged(); } );
-        connect( m_ui.fontSizeSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
-        connect(m_ui.weightComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this] { updateChanged(); } );
+        connect(m_ui.fontComboBox, &QFontComboBox::currentFontChanged, [this] {updateChanged();});
+        connect(m_ui.fontSizeSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [this](int /*i*/) {updateChanged();});
+        connect(m_ui.weightComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), [this] {updateChanged();});
 #if (QT_VERSION >= QT_VERSION_CHECK(6,7,0))
-        connect( m_ui.italicCheckBox, &QCheckBox::checkStateChanged, [this] { updateChanged(); } );
+        connect(m_ui.italicCheckBox, &QCheckBox::checkStateChanged, [this] {updateChanged();});
 #else
-        connect( m_ui.italicCheckBox, &QCheckBox::stateChanged, [this] { updateChanged(); } );
+        connect(m_ui.italicCheckBox, &QCheckBox::stateChanged, [this] {updateChanged();});
 #endif
 
         // track animations changes
-        connect( m_ui.animationsEnabled, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged );
-        connect( m_ui.animationsDuration, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
+        connect(m_ui.animationsEnabled, &QAbstractButton::clicked, this, &ConfigWidget::updateChanged);
+        connect(m_ui.animationsDuration, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
 
         // track shadows changes
-        connect( m_ui.shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()) );
-        connect( m_ui.shadowColor, &KColorButton::changed, this, &ConfigWidget::updateChanged );
+        connect(m_ui.shadowSize, SIGNAL(currentIndexChanged(int)), SLOT(updateChanged()));
+        connect(m_ui.shadowStrength, SIGNAL(valueChanged(int)), SLOT(updateChanged()));
+        connect(m_ui.shadowColor, &KColorButton::changed, this, &ConfigWidget::updateChanged);
 
         // track exception changes
-        connect( m_ui.exceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged );
+        connect(m_ui.exceptions, &ExceptionListWidget::changed, this, &ConfigWidget::updateChanged);
 
     }
 
@@ -83,27 +83,27 @@ namespace Breeze
     {
 
         // create internal settings and load from rc files
-        m_internalSettings = InternalSettingsPtr( new InternalSettings() );
+        m_internalSettings = InternalSettingsPtr(new InternalSettings());
         m_internalSettings->load();
 
         // assign to ui
-        m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
-        m_ui.buttonSize->setCurrentIndex( m_internalSettings->buttonSize() );
-        m_ui.titleMarginSpinBox->setValue( m_internalSettings->extraTitleMargin() );
-        m_ui.btnSpacingSpinBox->setValue( m_internalSettings->buttonSpacing() );
-        m_ui.drawBackgroundGradient->setChecked( m_internalSettings->drawBackgroundGradient() );
-        m_ui.animationsEnabled->setChecked( m_internalSettings->animationsEnabled() );
-        m_ui.animationsDuration->setValue( m_internalSettings->animationsDuration() );
-        m_ui.macOSButtons->setChecked( m_internalSettings->macOSButtons() );
-        m_ui.opacitySpinBox->setValue( m_internalSettings->backgroundOpacity() );
-        m_ui.gradientSpinBox->setValue( m_internalSettings->backgroundGradientIntensity() );
+        m_ui.titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
+        m_ui.buttonSize->setCurrentIndex(m_internalSettings->buttonSize());
+        m_ui.titleMarginSpinBox->setValue(m_internalSettings->extraTitleMargin());
+        m_ui.btnSpacingSpinBox->setValue(m_internalSettings->buttonSpacing());
+        m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
+        m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
+        m_ui.animationsDuration->setValue(m_internalSettings->animationsDuration());
+        m_ui.macOSButtons->setChecked(m_internalSettings->macOSButtons());
+        m_ui.opacitySpinBox->setValue(m_internalSettings->backgroundOpacity());
+        m_ui.gradientSpinBox->setValue(m_internalSettings->backgroundGradientIntensity());
 
         QString fontStr = m_internalSettings->titleBarFont();
         if (fontStr.isEmpty())
-            fontStr = QLatin1String("Sans,11,-1,5,50,0,0,0,0,0");
-        QFont f; f.fromString( fontStr );
-        m_ui.fontComboBox->setCurrentFont( f );
-        m_ui.fontSizeSpinBox->setValue( f.pointSize() );
+            fontStr = QLatin1String("Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1");
+        QFont f; f.fromString(fontStr);
+        m_ui.fontComboBox->setCurrentFont(f);
+        m_ui.fontSizeSpinBox->setValue(f.pointSize());
         int w = f.weight();
         switch (w) {
             case QFont::Medium:
@@ -125,21 +125,21 @@ namespace Breeze
                 m_ui.weightComboBox->setCurrentIndex(0);
                 break;
         }
-        m_ui.italicCheckBox->setChecked( f.italic() );
+        m_ui.italicCheckBox->setChecked(f.italic());
 
         // load shadows
-        if( m_internalSettings->shadowSize() <= InternalSettings::ShadowVeryLarge )
+        if(m_internalSettings->shadowSize() <= InternalSettings::ShadowVeryLarge)
             m_ui.shadowSize->setCurrentIndex(m_internalSettings->shadowSize());
         else
             m_ui.shadowSize->setCurrentIndex(InternalSettings::ShadowLarge);
 
-        m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
-        m_ui.shadowColor->setColor( m_internalSettings->shadowColor() );
+        m_ui.shadowStrength->setValue(qRound(qreal(m_internalSettings->shadowStrength()*100)/255));
+        m_ui.shadowColor->setColor(m_internalSettings->shadowColor());
 
         // load exceptions
         ExceptionList exceptions;
-        exceptions.readConfig( m_configuration );
-        m_ui.exceptions->setExceptions( exceptions.get() );
+        exceptions.readConfig(m_configuration);
+        m_ui.exceptions->setExceptions(exceptions.get());
         setNeedsSave(false);
 
     }
@@ -149,17 +149,17 @@ namespace Breeze
     {
 
         // create internal settings and load from rc files
-        m_internalSettings = InternalSettingsPtr( new InternalSettings() );
+        m_internalSettings = InternalSettingsPtr(new InternalSettings());
         m_internalSettings->load();
 
         // apply modifications from ui
-        m_internalSettings->setTitleAlignment( m_ui.titleAlignment->currentIndex() );
-        m_internalSettings->setButtonSize( m_ui.buttonSize->currentIndex() );
-        m_internalSettings->setExtraTitleMargin( m_ui.titleMarginSpinBox->value() );
-        m_internalSettings->setButtonSpacing( m_ui.btnSpacingSpinBox->value() );
-        m_internalSettings->setDrawBackgroundGradient( m_ui.drawBackgroundGradient->isChecked() );
-        m_internalSettings->setAnimationsEnabled( m_ui.animationsEnabled->isChecked() );
-        m_internalSettings->setAnimationsDuration( m_ui.animationsDuration->value() );
+        m_internalSettings->setTitleAlignment(m_ui.titleAlignment->currentIndex());
+        m_internalSettings->setButtonSize(m_ui.buttonSize->currentIndex());
+        m_internalSettings->setExtraTitleMargin(m_ui.titleMarginSpinBox->value());
+        m_internalSettings->setButtonSpacing(m_ui.btnSpacingSpinBox->value());
+        m_internalSettings->setDrawBackgroundGradient(m_ui.drawBackgroundGradient->isChecked());
+        m_internalSettings->setAnimationsEnabled(m_ui.animationsEnabled->isChecked());
+        m_internalSettings->setAnimationsDuration(m_ui.animationsDuration->value());
         m_internalSettings->setMacOSButtons(m_ui.macOSButtons->isChecked());
         m_internalSettings->setBackgroundOpacity(m_ui.opacitySpinBox->value());
         m_internalSettings->setBackgroundGradientIntensity(m_ui.gradientSpinBox->value());
@@ -190,16 +190,16 @@ namespace Breeze
         f.setItalic(m_ui.italicCheckBox->isChecked());
         m_internalSettings->setTitleBarFont(f.toString());
 
-        m_internalSettings->setShadowSize( m_ui.shadowSize->currentIndex() );
-        m_internalSettings->setShadowStrength( qRound( qreal(m_ui.shadowStrength->value()*255)/100 ) );
-        m_internalSettings->setShadowColor( m_ui.shadowColor->color() );
+        m_internalSettings->setShadowSize(m_ui.shadowSize->currentIndex());
+        m_internalSettings->setShadowStrength(qRound( qreal(m_ui.shadowStrength->value()*255)/100));
+        m_internalSettings->setShadowColor(m_ui.shadowColor->color());
 
         // save configuration
         m_internalSettings->save();
 
         // get list of exceptions and write
-        InternalSettingsList exceptions( m_ui.exceptions->exceptions() );
-        ExceptionList( exceptions ).writeConfig( m_configuration );
+        InternalSettingsList exceptions(m_ui.exceptions->exceptions());
+        ExceptionList(exceptions).writeConfig(m_configuration);
 
         // sync configuration
         m_configuration->sync();
@@ -228,24 +228,24 @@ namespace Breeze
     {
 
         // create internal settings and load from rc files
-        m_internalSettings = InternalSettingsPtr( new InternalSettings() );
+        m_internalSettings = InternalSettingsPtr(new InternalSettings());
         m_internalSettings->setDefaults();
 
         // assign to ui
-        m_ui.titleAlignment->setCurrentIndex( m_internalSettings->titleAlignment() );
-        m_ui.buttonSize->setCurrentIndex( m_internalSettings->buttonSize() );
-        m_ui.titleMarginSpinBox->setValue( m_internalSettings->extraTitleMargin() );
-        m_ui.btnSpacingSpinBox->setValue( m_internalSettings->buttonSpacing() );
-        m_ui.drawBackgroundGradient->setChecked( m_internalSettings->drawBackgroundGradient() );
-        m_ui.animationsEnabled->setChecked( m_internalSettings->animationsEnabled() );
-        m_ui.animationsDuration->setValue( m_internalSettings->animationsDuration() );
-        m_ui.macOSButtons->setChecked( m_internalSettings->macOSButtons() );
-        m_ui.opacitySpinBox->setValue( m_internalSettings->backgroundOpacity() );
-        m_ui.gradientSpinBox->setValue( m_internalSettings->backgroundGradientIntensity() );
+        m_ui.titleAlignment->setCurrentIndex(m_internalSettings->titleAlignment());
+        m_ui.buttonSize->setCurrentIndex(m_internalSettings->buttonSize());
+        m_ui.titleMarginSpinBox->setValue(m_internalSettings->extraTitleMargin());
+        m_ui.btnSpacingSpinBox->setValue(m_internalSettings->buttonSpacing());
+        m_ui.drawBackgroundGradient->setChecked(m_internalSettings->drawBackgroundGradient());
+        m_ui.animationsEnabled->setChecked(m_internalSettings->animationsEnabled());
+        m_ui.animationsDuration->setValue(m_internalSettings->animationsDuration());
+        m_ui.macOSButtons->setChecked(m_internalSettings->macOSButtons());
+        m_ui.opacitySpinBox->setValue(m_internalSettings->backgroundOpacity());
+        m_ui.gradientSpinBox->setValue(m_internalSettings->backgroundGradientIntensity());
 
         QFont f; f.fromString(QStringLiteral("Sans,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1"));
-        m_ui.fontComboBox->setCurrentFont( f );
-        m_ui.fontSizeSpinBox->setValue( f.pointSize() );
+        m_ui.fontComboBox->setCurrentFont(f);
+        m_ui.fontSizeSpinBox->setValue(f.pointSize());
         int w = f.weight();
         switch (w) {
             case QFont::Medium:
@@ -267,11 +267,11 @@ namespace Breeze
                 m_ui.weightComboBox->setCurrentIndex(0);
                 break;
         }
-        m_ui.italicCheckBox->setChecked( f.italic() );
+        m_ui.italicCheckBox->setChecked(f.italic());
 
-        m_ui.shadowSize->setCurrentIndex( m_internalSettings->shadowSize() );
-        m_ui.shadowStrength->setValue( qRound(qreal(m_internalSettings->shadowStrength()*100)/255 ) );
-        m_ui.shadowColor->setColor( m_internalSettings->shadowColor() );
+        m_ui.shadowSize->setCurrentIndex(m_internalSettings->shadowSize());
+        m_ui.shadowStrength->setValue(qRound(qreal(m_internalSettings->shadowStrength()*100)/255));
+        m_ui.shadowColor->setColor(m_internalSettings->shadowColor());
 
     }
 
@@ -285,7 +285,7 @@ namespace Breeze
 
         // track modifications
         bool modified(false);
-        QFont f; f.fromString( m_internalSettings->titleBarFont() );
+        QFont f; f.fromString(m_internalSettings->titleBarFont());
 
         if (m_ui.macOSButtons->isChecked() != m_internalSettings->macOSButtons())
             modified = true;
