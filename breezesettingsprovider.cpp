@@ -69,14 +69,14 @@ namespace Breeze
     }
 
     //__________________________________________________________________
-    InternalSettingsPtr SettingsProvider::internalSettings( Decoration *decoration ) const
+    InternalSettingsPtr SettingsProvider::internalSettings(Decoration *decoration) const
     {
 
         QString windowTitle;
         QString windowClass;
 
         // get the client
-        const auto client = decoration->client();
+        const auto client = decoration->window();
 
         for (auto internalSettings : std::as_const(m_exceptions))
         {
@@ -86,14 +86,14 @@ namespace Breeze
             // discard exceptions with empty exception pattern
             if (internalSettings->exceptionPattern().isEmpty()) continue;
 
-            if (internalSettings->isDialog())
+            /*if (internalSettings->isDialog())
             {
                 KWindowInfo info(client->windowId(), NET::WMWindowType);
                 if (info.valid()
                     && info.windowType(NET::NormalMask | NET::DialogMask) != NET::Dialog) {
                     continue;
                 }
-            }
+            }*/
 
             /*
             decide which value is to be compared

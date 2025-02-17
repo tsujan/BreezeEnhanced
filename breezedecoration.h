@@ -24,15 +24,15 @@
 #include "breeze.h"
 #include "breezesettings.h"
 
-#include <KDecoration2/DecoratedClient>
-#include <KDecoration2/Decoration>
-#include <KDecoration2/DecorationSettings>
+#include <KDecoration3/DecoratedWindow>
+#include <KDecoration3/Decoration>
+#include <KDecoration3/DecorationSettings>
 
 #include <QPalette>
 #include <QVariant>
 #include <QVariantAnimation>
 
-namespace KDecoration2
+namespace KDecoration3
 {
     class DecorationButton;
     class DecorationButtonGroup;
@@ -40,7 +40,7 @@ namespace KDecoration2
 
 namespace Breeze
 {
-    class Decoration : public KDecoration2::Decoration
+    class Decoration : public KDecoration3::Decoration
     {
         Q_OBJECT
 
@@ -50,17 +50,17 @@ namespace Breeze
         explicit Decoration(QObject *parent = nullptr, const QVariantList &args = QVariantList());
 
         //* destructor
-        virtual ~Decoration();
+        ~Decoration() override;
 
         //* paint
-        void paint(QPainter *painter, const QRect &repaintRegion) override;
+        void paint(QPainter *painter, const QRectF &repaintRegion) override;
 
         //* internal settings
         InternalSettingsPtr internalSettings() const
         { return m_internalSettings; }
 
         //* caption height
-        int captionHeight() const;
+        qreal captionHeight() const;
 
         //* button size
         int buttonSize() const;
@@ -96,24 +96,26 @@ namespace Breeze
         void updateButtonsGeometryDelayed();
         void updateTitleBar();
         void updateActiveState();
+        void updateScale();
 
         private:
 
         //* return the rect in which caption will be drawn
-        QPair<QRect,Qt::Alignment> captionRect() const;
+        QPair<QRectF,Qt::Alignment> captionRect() const;
 
         void createButtons();
-        void paintTitleBar(QPainter *painter, const QRect &repaintRegion);
+        void paintTitleBar(QPainter *painter, const QRectF &repaintRegion);
         void updateShadow();
 
         void setScaledCornerRadius();
 
         //*@name border size
         //@{
-        int borderSize(bool bottom = false) const;
+        qreal borderSize(bool bottom, qreal scale) const;
         inline bool hasBorders() const;
         inline bool hasNoBorders() const;
         inline bool hasNoSideBorders() const;
+        QMarginsF bordersFor(qreal scale) const;
         //@}
 
         //*@name color customization
@@ -124,8 +126,8 @@ namespace Breeze
         //@}
 
         InternalSettingsPtr m_internalSettings;
-        KDecoration2::DecorationButtonGroup *m_leftButtons = nullptr;
-        KDecoration2::DecorationButtonGroup *m_rightButtons = nullptr;
+        KDecoration3::DecorationButtonGroup *m_leftButtons = nullptr;
+        KDecoration3::DecorationButtonGroup *m_rightButtons = nullptr;
 
         //*frame corner radius, scaled according to DPI
         qreal m_scaledCornerRadius = 3;
@@ -136,7 +138,7 @@ namespace Breeze
         if (m_internalSettings && m_internalSettings->mask() & BorderSize)
             return m_internalSettings->borderSize() > InternalSettings::BorderNoSides;
         else
-            return settings()->borderSize() > KDecoration2::BorderSize::NoSides;
+            return settings()->borderSize() > KDecoration3::BorderSize::NoSides;
     }
 
     bool Decoration::hasNoBorders() const
@@ -144,7 +146,7 @@ namespace Breeze
         if (m_internalSettings && m_internalSettings->mask() & BorderSize)
             return m_internalSettings->borderSize() == InternalSettings::BorderNone;
         else
-            return settings()->borderSize() == KDecoration2::BorderSize::None;
+            return settings()->borderSize() == KDecoration3::BorderSize::None;
     }
 
     bool Decoration::hasNoSideBorders() const
@@ -152,50 +154,50 @@ namespace Breeze
         if (m_internalSettings && m_internalSettings->mask() & BorderSize)
             return m_internalSettings->borderSize() == InternalSettings::BorderNoSides;
         else
-            return settings()->borderSize() == KDecoration2::BorderSize::NoSides;
+            return settings()->borderSize() == KDecoration3::BorderSize::NoSides;
     }
 
     bool Decoration::isMaximized() const
     {
-        return client()->isMaximized();
+        return window()->isMaximized();
     }
 
     bool Decoration::isMaximizedHorizontally() const
     {
-        return client()->isMaximizedHorizontally();
+        return window()->isMaximizedHorizontally();
     }
 
     bool Decoration::isMaximizedVertically() const
     {
-        return client()->isMaximizedVertically();
+        return window()->isMaximizedVertically();
     }
 
     bool Decoration::isLeftEdge() const
     {
-        const auto c = client();
+        const auto c = window();
         return (c->isMaximizedHorizontally() || c->adjacentScreenEdges().testFlag(Qt::LeftEdge));
     }
 
     bool Decoration::isRightEdge() const
     {
-        const auto c = client();
+        const auto c = window();
         return (c->isMaximizedHorizontally() || c->adjacentScreenEdges().testFlag(Qt::RightEdge));
     }
 
     bool Decoration::isTopEdge() const
     {
-        const auto c = client();
+        const auto c = window();
         return (c->isMaximizedVertically() || c->adjacentScreenEdges().testFlag(Qt::TopEdge));
     }
 
     bool Decoration::isBottomEdge() const
     {
-        const auto c = client();
+        const auto c = window();
         return (c->isMaximizedVertically() || c->adjacentScreenEdges().testFlag(Qt::BottomEdge));
     }
 
     bool Decoration::hideTitleBar() const
-    { return m_internalSettings->hideTitleBar() && !client()->isShaded(); }
+    { return m_internalSettings->hideTitleBar() && !window()->isShaded(); }
 
     bool Decoration::opaqueTitleBar() const
     { return m_internalSettings->opaqueTitleBar(); }

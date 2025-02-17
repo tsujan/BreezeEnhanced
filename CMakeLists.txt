@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
 project(breezeenhanced)
-set(PROJECT_VERSION "6.2.0")
+set(PROJECT_VERSION "6.3.0")
 set(PROJECT_VERSION_MAJOR 6)
 
 include(WriteBasicConfigVersionFile)
 include(FeatureSummary)
-set(QT_MIN_VERSION "6.6.0")
-set(KF6_MIN_VERSION "6.2.0")
+set(QT_MIN_VERSION "6.7.0")
+set(KF6_MIN_VERSION "6.3.0")
 
 find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
 
@@ -22,7 +22,7 @@ include(KDECompilerSettings NO_POLICY_SCOPE)
 include(GenerateExportHeader)
 # include(GtkUpdateIconCache)
 
-find_package(KDecoration2 REQUIRED)
+find_package(KDecoration3 REQUIRED)
 
 find_package(KF6KCMUtils ${KF6_MIN_VERSION})
 set_package_properties(KF6KCMUtils PROPERTIES
@@ -73,7 +73,7 @@ target_link_libraries(breezeenhanced_STATIC
         Qt6::Gui
         Qt6::Widgets
         Qt6::DBus
-        KDecoration2::KDecoration
+        KDecoration3::KDecoration
     PRIVATE
         KF6::I18n
         KF6::WindowSystem
