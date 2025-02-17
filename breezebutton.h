@@ -50,49 +50,22 @@ namespace Breeze
         //* render
         void paint(QPainter *painter, const QRectF &repaintRegion) override;
 
-        //* flag
-        enum Flag
+        //* padding
+        void setPadding(const QMargins &value)
         {
-            FlagNone,
-            FlagStandalone,
-            FlagFirstInList,
-            FlagLastInList
-        };
-
-        //* flag
-        void setFlag(Flag value)
-        {
-            m_flag = value;
+            m_padding = value;
         }
 
-        //* standalone buttons
-        bool isStandAlone() const
+        //* left padding, for rendering
+        void setLeftPadding(qreal value)
         {
-            return m_flag == FlagStandalone;
+            m_padding.setLeft(value);
         }
 
-        //* offset
-        void setOffset(const QPointF& value)
+        //* right padding, for rendering
+        void setRightPadding(qreal value)
         {
-            m_offset = value;
-        }
-
-        //* horizontal offset, for rendering
-        void setHorizontalOffset(qreal value)
-        {
-            m_offset.setX(value);
-        }
-
-        //* vertical offset, for rendering
-        void setVerticalOffset(qreal value)
-        {
-            m_offset.setY(value);
-        }
-
-        //* set icon size
-        void setIconSize(const QSizeF& value)
-        {
-            m_iconSize = value;
+            m_padding.setRight(value);
         }
 
         //*@name active state change animation
@@ -110,6 +83,16 @@ namespace Breeze
         }
 
         //@}
+
+        void setPreferredSize(const QSizeF &size)
+        {
+            m_preferredSize = size;
+        }
+
+        QSizeF preferredSize() const
+        {
+            return m_preferredSize;
+        }
 
         private Q_SLOTS:
 
@@ -133,16 +116,14 @@ namespace Breeze
         QColor backgroundColor() const;
         //@}
 
-        Flag m_flag = FlagNone;
-
         //* active state change animation
         QVariantAnimation *m_animation;
 
-        //* vertical offset (for rendering)
-        QPointF m_offset;
+        //* padding (for rendering)
+        QMargins m_padding;
 
-        //* icon size
-        QSizeF m_iconSize;
+        //* implicit size
+        QSizeF m_preferredSize;
 
         //* active state change opacity
         qreal m_opacity = 0;

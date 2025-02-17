@@ -174,26 +174,26 @@ namespace Breeze
 
     bool Decoration::isLeftEdge() const
     {
-        const auto c = window();
-        return (c->isMaximizedHorizontally() || c->adjacentScreenEdges().testFlag(Qt::LeftEdge));
+        const auto w = window();
+        return (w->isMaximizedHorizontally() || w->adjacentScreenEdges().testFlag(Qt::LeftEdge));
     }
 
     bool Decoration::isRightEdge() const
     {
-        const auto c = window();
-        return (c->isMaximizedHorizontally() || c->adjacentScreenEdges().testFlag(Qt::RightEdge));
+        const auto w = window();
+        return (w->isMaximizedHorizontally() || w->adjacentScreenEdges().testFlag(Qt::RightEdge));
     }
 
     bool Decoration::isTopEdge() const
     {
-        const auto c = window();
-        return (c->isMaximizedVertically() || c->adjacentScreenEdges().testFlag(Qt::TopEdge));
+        const auto w = window();
+        return (w->isMaximizedVertically() || w->adjacentScreenEdges().testFlag(Qt::TopEdge));
     }
 
     bool Decoration::isBottomEdge() const
     {
-        const auto c = window();
-        return (c->isMaximizedVertically() || c->adjacentScreenEdges().testFlag(Qt::BottomEdge));
+        const auto w = window();
+        return (w->isMaximizedVertically() || w->adjacentScreenEdges().testFlag(Qt::BottomEdge));
     }
 
     bool Decoration::hideTitleBar() const

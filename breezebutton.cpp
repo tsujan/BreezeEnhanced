@@ -50,12 +50,6 @@ namespace Breeze
             setOpacity(value.toReal());
         });
 
-
-        // setup default geometry
-        const qreal size = decoration->buttonSize();
-        setGeometry(QRectF(0, 0, size, size));
-        setIconSize(QSizeF(size, size));
-
         // connections
         connect(decoration->window(), SIGNAL(iconChanged(QIcon)), this, SLOT(update()));
         connect(decoration->settings().get(), &KDecoration3::DecorationSettings::reconfigured, this, &Button::reconfigure);
@@ -69,10 +63,7 @@ namespace Breeze
     Button::Button(QObject *parent, const QVariantList &args)
         : Button(args.at(0).value<DecorationButtonType>(), args.at(1).value<Decoration*>(), parent)
     {
-        m_flag = FlagStandalone;
-        //! icon size must return to !valid because it was altered from the default constructor,
-        //! in Standalone mode the button is not using the decoration metrics but its geometry
-        m_iconSize = QSizeF(-1.0, -1.0);
+        setGeometry(QRectF(QPointF(0, 0), preferredSize()));
     }
 
     //__________________________________________________________________
@@ -134,39 +125,28 @@ namespace Breeze
 
         painter->save();
 
-        // translate from offset
-        if (m_flag == FlagFirstInList) painter->translate(m_offset);
-        else painter->translate(0, m_offset.y());
-
-        if (!m_iconSize.isValid() || isStandAlone()) m_iconSize = geometry().size().toSize();
-
         // menu button
         if (type() == DecorationButtonType::Menu)
         {
-
-            const QRectF iconRect(geometry().topLeft(), m_iconSize);
-            const auto c = decoration()->window();
-            /*if (auto deco =  qobject_cast<Decoration*>(decoration())) {
+            const QRectF iconRect = geometry().marginsRemoved(m_padding);
+            const auto w = decoration()->window();
+            /*if (auto deco = qobject_cast<Decoration *>(decoration())) {
                 const QPalette activePalette = KIconLoader::global()->customPalette();
-                QPalette palette = c->palette();
+                QPalette palette = w->palette();
                 palette.setColor(QPalette::WindowText, deco->fontColor());
                 KIconLoader::global()->setCustomPalette(palette);
-                c->icon().paint(painter, iconRect.toRect());
+                w->icon().paint(painter, iconRect.toRect());
                 if (activePalette == QPalette()) {
                     KIconLoader::global()->resetPalette();
-                }    else {
+                } else {
                     KIconLoader::global()->setCustomPalette(palette);
                 }
             } else {*/
-                c->icon().paint(painter, iconRect.toRect());
+                w->icon().paint(painter, iconRect.toRect());
             //}
-
-
-        } else {
-
-            drawIcon(painter);
-
         }
+        else
+            drawIcon(painter);
 
         painter->restore();
 
@@ -183,9 +163,10 @@ namespace Breeze
         this makes all further rendering and scaling simpler
         all further rendering is performed inside QRect(0, 0, 18, 18)
         */
-        painter->translate(geometry().topLeft());
+        const QRectF rect = geometry().marginsRemoved(m_padding);
+        painter->translate(rect.topLeft());
 
-        const qreal width(m_iconSize.width());
+        const qreal width(rect.width());
         painter->scale(width/20, width/20);
         painter->translate(1, 1);
 
@@ -1074,8 +1055,11 @@ namespace Breeze
     {
 
         // animation
-        auto d = qobject_cast<Decoration*>(decoration());
-        if (d)  m_animation->setDuration(d->internalSettings()->animationsDuration());
+        if (auto d = qobject_cast<Decoration*>(decoration()))
+        {
+            m_animation->setDuration(d->internalSettings()->animationsDuration());
+            setPreferredSize(QSizeF(d->buttonSize(), d->buttonSize()));
+        }
 
     }
 

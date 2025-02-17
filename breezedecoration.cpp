@@ -169,10 +169,10 @@ namespace Breeze
     QColor Decoration::titleBarColor() const
     {
 
-        const auto c = window();
+        const auto w = window();
         if (hideTitleBar())
-            return c->color(ColorGroup::Inactive, ColorRole::TitleBar);
-        return c->color(c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::TitleBar);
+            return w->color(ColorGroup::Inactive, ColorRole::TitleBar);
+        return w->color(w->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::TitleBar);
 
     }
 
@@ -180,15 +180,15 @@ namespace Breeze
     QColor Decoration::fontColor() const
     {
 
-        const auto c = window();
-        return  c->color(c->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Foreground);
+        const auto w = window();
+        return  w->color(w->isActive() ? ColorGroup::Active : ColorGroup::Inactive, ColorRole::Foreground);
 
     }
 
     //________________________________________________________________
     bool Decoration::init()
     {
-        const auto c = window();
+        const auto w = window();
 
         reconfigure();
         updateTitleBar();
@@ -198,6 +198,7 @@ namespace Breeze
         // a change in font might cause the borders to change
         recalculateBorders();
         resetBlurRegion();
+        connect(s.get(), &KDecoration3::DecorationSettings::fontChanged, this, &Decoration::recalculateBorders);
         connect(s.get(), &KDecoration3::DecorationSettings::spacingChanged, this, &Decoration::recalculateBorders);
 
         // buttons
@@ -210,40 +211,37 @@ namespace Breeze
         connect(s.get(), &KDecoration3::DecorationSettings::reconfigured, SettingsProvider::self(), &SettingsProvider::reconfigure, Qt::UniqueConnection);
         connect(s.get(), &KDecoration3::DecorationSettings::reconfigured, this, &Decoration::updateButtonsGeometryDelayed);
 
-        connect(c, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::recalculateBorders);
-        connect(c, &KDecoration3::DecoratedWindow::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
-        connect(c, &KDecoration3::DecoratedWindow::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
-        connect(c, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::recalculateBorders);
+        connect(w, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::recalculateBorders);
+        connect(w, &KDecoration3::DecoratedWindow::maximizedHorizontallyChanged, this, &Decoration::recalculateBorders);
+        connect(w, &KDecoration3::DecoratedWindow::maximizedVerticallyChanged, this, &Decoration::recalculateBorders);
+        connect(w, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::recalculateBorders);
 
-        connect(c, &KDecoration3::DecoratedWindow::captionChanged, this,
-            [this]()
-            {
-                // update the caption area
-                update(titleBar());
-            }
-        );
+        connect(w, &KDecoration3::DecoratedWindow::captionChanged, this, [this]() {
+            // update the caption area
+            update(titleBar());
+        });
 
-        connect(c, &KDecoration3::DecoratedWindow::activeChanged, this, &Decoration::updateActiveState);
+        connect(w, &KDecoration3::DecoratedWindow::activeChanged, this, &Decoration::updateActiveState);
         connect(this, &KDecoration3::Decoration::bordersChanged, this, &Decoration::updateTitleBar);
-        connect(c, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::updateTitleBar);
-        connect(c, &KDecoration3::DecoratedWindow::widthChanged, this, &Decoration::updateTitleBar);
-        connect(c, &KDecoration3::DecoratedWindow::maximizedChanged, this, &Decoration::updateTitleBar);
-        //connect(c, &KDecoration3::DecoratedWindow::maximizedChanged, this, &Decoration::setOpaque);
+        connect(w, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::updateTitleBar);
+        connect(w, &KDecoration3::DecoratedWindow::widthChanged, this, &Decoration::updateTitleBar);
+        connect(w, &KDecoration3::DecoratedWindow::maximizedChanged, this, &Decoration::updateTitleBar);
+        //connect(w, &KDecoration3::DecoratedWindow::maximizedChanged, this, &Decoration::setOpaque);
 
-        connect(c, &KDecoration3::DecoratedWindow::widthChanged, this, &Decoration::updateButtonsGeometry);
-        connect(c, &KDecoration3::DecoratedWindow::maximizedChanged, this, &Decoration::updateButtonsGeometry);
-        connect(c, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
-        connect(c, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::updateButtonsGeometry);
+        connect(w, &KDecoration3::DecoratedWindow::widthChanged, this, &Decoration::updateButtonsGeometry);
+        connect(w, &KDecoration3::DecoratedWindow::maximizedChanged, this, &Decoration::updateButtonsGeometry);
+        connect(w, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::updateButtonsGeometry);
+        connect(w, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::updateButtonsGeometry);
 
         connect(s.get(), &KDecoration3::DecorationSettings::borderSizeChanged, this, &Decoration::resetBlurRegion);
         connect(s.get(), &KDecoration3::DecorationSettings::spacingChanged, this, &Decoration::resetBlurRegion);
-        connect(c, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::resetBlurRegion);
-        connect(c, &KDecoration3::DecoratedWindow::maximizedHorizontallyChanged, this, &Decoration::resetBlurRegion);
-        connect(c, &KDecoration3::DecoratedWindow::maximizedVerticallyChanged, this, &Decoration::resetBlurRegion);
-        connect(c, &KDecoration3::DecoratedWindow::maximizedChanged, this, &Decoration::resetBlurRegion);
-        connect(c, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::resetBlurRegion);
-        connect(c, &KDecoration3::DecoratedWindow::widthChanged, this, &Decoration::resetBlurRegion);
-        connect(c, &KDecoration3::DecoratedWindow::heightChanged, this, [this]() {
+        connect(w, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::resetBlurRegion);
+        connect(w, &KDecoration3::DecoratedWindow::maximizedHorizontallyChanged, this, &Decoration::resetBlurRegion);
+        connect(w, &KDecoration3::DecoratedWindow::maximizedVerticallyChanged, this, &Decoration::resetBlurRegion);
+        connect(w, &KDecoration3::DecoratedWindow::maximizedChanged, this, &Decoration::resetBlurRegion);
+        connect(w, &KDecoration3::DecoratedWindow::shadedChanged, this, &Decoration::resetBlurRegion);
+        connect(w, &KDecoration3::DecoratedWindow::widthChanged, this, &Decoration::resetBlurRegion);
+        connect(w, &KDecoration3::DecoratedWindow::heightChanged, this, [this]() {
             if (!hasNoSideBorders()) resetBlurRegion();
         });
 
@@ -259,9 +257,9 @@ namespace Breeze
     void Decoration::updateTitleBar()
     {
         auto s = settings();
-        const auto c = window();
+        const auto w = window();
         const bool maximized = isMaximized();
-        const qreal width =  maximized ? c->width() : c->width() - 2*s->largeSpacing()*Metrics::TitleBar_SideMargin;
+        const qreal width =  maximized ? w->width() : w->width() - 2*s->largeSpacing()*Metrics::TitleBar_SideMargin;
         const qreal height = (maximized || isTopEdge()) ? borderTop() : borderTop() - s->smallSpacing()*Metrics::TitleBar_TopMargin;
         const qreal x = maximized ? 0 : s->largeSpacing()*Metrics::TitleBar_SideMargin;
         const qreal y = (maximized || isTopEdge()) ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
@@ -352,13 +350,13 @@ namespace Breeze
     //________________________________________________________________
     QMarginsF Decoration::bordersFor(qreal scale) const
     {
-        const auto c = window();
+        const auto w = window();
         auto s = settings();
 
         // left, right and bottom borders
         const qreal left = isLeftEdge() ? 0 : borderSize(false, scale);
         const qreal right = isRightEdge() ? 0 : borderSize(false, scale);
-        const qreal bottom = (c->isShaded() || isBottomEdge()) ? 0 : borderSize(true, scale);
+        const qreal bottom = (w->isShaded() || isBottomEdge()) ? 0 : borderSize(true, scale);
 
         qreal top = 0;
         if (hideTitleBar())
@@ -372,7 +370,7 @@ namespace Breeze
             // padding below
             // extra pixel is used for the active window outline (but not in the shaded state)
             const int baseSize = s->smallSpacing();
-            top += KDecoration3::snapToPixelGrid(baseSize * Metrics::TitleBar_BottomMargin + (c->isShaded() ? 0 : 1), scale);
+            top += KDecoration3::snapToPixelGrid(baseSize * Metrics::TitleBar_BottomMargin + (w->isShaded() ? 0 : 1), scale);
 
             // padding above
             top += KDecoration3::snapToPixelGrid(baseSize * Metrics::TitleBar_TopMargin, scale);
@@ -383,13 +381,13 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::recalculateBorders()
     {
-        const auto c = window();
+        const auto w = window();
         auto s = settings();
 
-        setBorders(bordersFor(c->nextScale()));
+        setBorders(bordersFor(w->nextScale()));
 
         // extended sizes
-        const qreal extSize = c->snapToPixelGrid(s->largeSpacing());
+        const qreal extSize = w->snapToPixelGrid(s->largeSpacing());
         qreal extSides = 0;
         qreal extBottom = 0;
         if (hasNoBorders())
@@ -420,10 +418,10 @@ namespace Breeze
         }
 
         QRegion region;
-        const auto c = window();
+        const auto w = window();
         QSizeF rSize(m_scaledCornerRadius, m_scaledCornerRadius);
 
-        if (!c->isShaded() && !isMaximized() && !hasNoBorders())
+        if (!w->isShaded() && !isMaximized() && !hasNoBorders())
         {
             // exclude the titlebar
             qreal topBorder = hideTitleBar() ? 0 : borderTop();
@@ -492,7 +490,7 @@ namespace Breeze
         {
             region |= QRegion(titleRect.toRect());
         }
-        else if (c->isShaded())
+        else if (w->isShaded())
         {
             QRegion topLeft(QRectF(titleRect.topLeft(), 2*rSize).toRect(), QRegion::Ellipse);
             QRegion topRight(QRectF(titleRect.topLeft() + QPointF(titleRect.width() - 2*m_scaledCornerRadius, 0),
@@ -556,65 +554,68 @@ namespace Breeze
         const auto s = settings();
 
         // adjust button position
-        const int bHeight = captionHeight() + (isTopEdge() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0);
-        const int bWidth = buttonSize();
-        const int verticalOffset = (isTopEdge() ? s->smallSpacing()*Metrics::TitleBar_TopMargin:0) + (captionHeight()-buttonSize())/2;
         const auto buttonList = m_leftButtons->buttons() + m_rightButtons->buttons();
         for (KDecoration3::DecorationButton *button : buttonList)
         {
             auto btn = static_cast<Button *>(button);
 
-            btn->setGeometry(QRectF(QPointF(0, 0), QSizeF(bWidth, bHeight)));
-            btn->setOffset(QPointF(0, verticalOffset));
-            btn->setIconSize(QSizeF(bWidth, bWidth));
+            const int verticalOffset = (isTopEdge() ? s->smallSpacing() * Metrics::TitleBar_TopMargin : 0);
+
+            const QSizeF preferredSize = btn->preferredSize();
+            const int bHeight = preferredSize.height() + verticalOffset;
+            const int bWidth = preferredSize.width();
+
+            btn->setGeometry(QRectF(QPoint(0, 0), QSizeF(bWidth, bHeight)));
+            btn->setPadding(QMargins(0, verticalOffset, 0, 0));
         }
 
         // left buttons
         if (!m_leftButtons->buttons().isEmpty())
         {
-
             // spacing (use our own spacing instead of s->smallSpacing()*Metrics::TitleBar_ButtonSpacing)
             m_leftButtons->setSpacing(m_internalSettings->buttonSpacing());
 
             // padding
-            const int vPadding = isTopEdge() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
-            const int hPadding = s->smallSpacing()*Metrics::TitleBar_SideMargin;
+            const int vPadding = isTopEdge() ? 0 : s->smallSpacing() * Metrics::TitleBar_TopMargin;
+            const int hPadding = s->smallSpacing() * Metrics::TitleBar_SideMargin;
             if (isLeftEdge())
             {
                 // add offsets on the side buttons, to preserve padding, but satisfy Fitts law
                 auto button = static_cast<Button *>(m_leftButtons->buttons().front());
-                button->setGeometry(QRectF(QPointF(0, 0), QSizeF(bWidth + hPadding, bHeight)));
-                button->setFlag(Button::FlagFirstInList);
-                button->setHorizontalOffset(hPadding);
+
+                QRectF geometry = button->geometry();
+                geometry.adjust(-hPadding, 0, 0, 0);
+                button->setGeometry(geometry);
+                button->setLeftPadding(hPadding);
 
                 m_leftButtons->setPos(QPointF(0, vPadding));
-
             }
             else
                 m_leftButtons->setPos(QPointF(hPadding + borderLeft(), vPadding));
-
         }
 
         // right buttons
         if (!m_rightButtons->buttons().isEmpty())
         {
-
             // spacing (use our own spacing instead of s->smallSpacing()*Metrics::TitleBar_ButtonSpacing)
             m_rightButtons->setSpacing(m_internalSettings->buttonSpacing());
 
             // padding
-            const int vPadding = isTopEdge() ? 0 : s->smallSpacing()*Metrics::TitleBar_TopMargin;
-            const int hPadding = s->smallSpacing()*Metrics::TitleBar_SideMargin;
+            const int vPadding = isTopEdge() ? 0 : s->smallSpacing() * Metrics::TitleBar_TopMargin;
+            const int hPadding = s->smallSpacing() * Metrics::TitleBar_SideMargin;
             if (isRightEdge())
             {
                 auto button = static_cast<Button *>(m_rightButtons->buttons().back());
-                button->setGeometry(QRectF(QPointF(0, 0), QSizeF(bWidth + hPadding, bHeight)));
-                button->setFlag(Button::FlagLastInList);
+
+                QRectF geometry = button->geometry();
+                geometry.adjust(0, 0, hPadding, 0);
+                button->setGeometry(geometry);
+                button->setRightPadding(hPadding);
 
                 m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width(), vPadding));
-
-            } else m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - hPadding - borderRight(), vPadding));
-
+            }
+            else
+                m_rightButtons->setPos(QPointF(size().width() - m_rightButtons->geometry().width() - hPadding - borderRight(), vPadding));
         }
 
         update();
@@ -625,11 +626,11 @@ namespace Breeze
     void Decoration::paint(QPainter *painter, const QRectF &repaintRegion)
     {
         // TODO: optimize based on repaintRegion
-        const auto c = window();
+        const auto w = window();
         auto s = settings();
 
         // paint background
-        if (!c->isShaded())
+        if (!w->isShaded())
         {
             painter->fillRect(rect(), Qt::transparent);
             painter->save();
@@ -660,8 +661,8 @@ namespace Breeze
             painter->save();
             painter->setRenderHint(QPainter::Antialiasing, false);
             painter->setBrush(Qt::NoBrush);
-            painter->setPen(c->isActive() ? c->color(ColorGroup::Active, ColorRole::TitleBar)
-                                          : c->color(ColorGroup::Inactive, ColorRole::Foreground));
+            painter->setPen(w->isActive() ? w->color(ColorGroup::Active, ColorRole::TitleBar)
+                                          : w->color(ColorGroup::Inactive, ColorRole::Foreground));
 
             painter->drawRect(rect().adjusted(0, 0, -1, -1));
             painter->restore();
@@ -672,7 +673,7 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::paintTitleBar(QPainter *painter, const QRectF &repaintRegion)
     {
-        const auto c = window();
+        const auto w = window();
         const QRectF titleRect(QPointF(0, 0), QSizeF(size().width(), borderTop()));
 
         if (!titleRect.intersects(repaintRegion)) return;
@@ -716,7 +717,7 @@ namespace Breeze
         {
             painter->drawRect(titleRect);
         }
-        else if (c->isShaded())
+        else if (w->isShaded())
         {
             painter->drawRoundedRect(titleRect, m_scaledCornerRadius, m_scaledCornerRadius);
         }
@@ -741,7 +742,7 @@ namespace Breeze
         painter->setFont(f);
         painter->setPen(fontColor());
         const auto cR = captionRect();
-        const QString caption = painter->fontMetrics().elidedText(c->caption(), Qt::ElideMiddle, cR.first.width());
+        const QString caption = painter->fontMetrics().elidedText(w->caption(), Qt::ElideMiddle, cR.first.width());
         painter->drawText(cR.first, cR.second | Qt::TextSingleLine, caption);
 
         // draw all buttons
@@ -768,11 +769,11 @@ namespace Breeze
     //________________________________________________________________
     qreal Decoration::captionHeight() const
     {
-        const auto c = window();
+        const auto w = window();
         return hideTitleBar() ? borderTop()
                               : borderTop()
-                                - settings()->smallSpacing()*(Metrics::TitleBar_BottomMargin + Metrics::TitleBar_TopMargin)
-                                - (c->isShaded() ? 0 : 1); // see recalculateBorders()
+                                - settings()->smallSpacing() * (Metrics::TitleBar_BottomMargin + Metrics::TitleBar_TopMargin)
+                                - (w->isShaded() ? 0 : 1); // see recalculateBorders()
     }
 
     //________________________________________________________________
@@ -782,7 +783,7 @@ namespace Breeze
         else {
 
             const qreal extraTitleMargin = m_internalSettings->extraTitleMargin();
-            const auto c = window();
+            const auto w = window();
             const qreal leftOffset = m_leftButtons->buttons().isEmpty() ?
                 Metrics::TitleBar_SideMargin*settings()->smallSpacing() + extraTitleMargin :
                 m_leftButtons->geometry().x() + m_leftButtons->geometry().width() + Metrics::TitleBar_SideMargin*settings()->smallSpacing() + extraTitleMargin;
@@ -813,7 +814,7 @@ namespace Breeze
                     const QRectF fullRect = QRectF(0, yOffset, size().width(), captionHeight());
                     QFont f; f.fromString(m_internalSettings->titleBarFont());
                     QFontMetricsF fm(f);
-                    QRectF boundingRect(fm.boundingRect(c->caption()));
+                    QRectF boundingRect(fm.boundingRect(w->caption()));
 
                     // text bounding rect
                     boundingRect.setTop(yOffset);
@@ -838,8 +839,8 @@ namespace Breeze
     //________________________________________________________________
     void Decoration::updateShadow()
     {
-        const auto c = window();
-        auto &shadow = c->isActive() ? g_sShadow : g_sShadowInactive;
+        const auto w = window();
+        auto &shadow = w->isActive() ? g_sShadow : g_sShadowInactive;
 
         if (!shadow
             || g_shadowSizeEnum != m_internalSettings->shadowSize()
@@ -871,7 +872,7 @@ namespace Breeze
             shadowRenderer.setBorderRadius(m_scaledCornerRadius + 0.5);
             shadowRenderer.setBoxSize(boxSize);
 
-            const qreal strength = static_cast<qreal>(g_shadowStrength) / 255.0 * (c->isActive() ? 1.0 : 0.5);
+            const qreal strength = static_cast<qreal>(g_shadowStrength) / 255.0 * (w->isActive() ? 1.0 : 0.5);
             shadowRenderer.addShadow(params.shadow1.offset, params.shadow1.radius,
                 withOpacity(g_shadowColor, params.shadow1.opacity * strength));
             shadowRenderer.addShadow(params.shadow2.offset, params.shadow2.radius,
