@@ -2,6 +2,7 @@ V6.3
 ---------
  * Bumped the version to 6.3 and imported some changes from Breeze 6.3.0.
  * Fixed a problem in a ui file.
+ * Removed the dialog option because it never worked on Wayland, and, since KDecoration3, it doesn't work on X11 either.
 
 V6.2
 ---------

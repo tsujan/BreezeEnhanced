@@ -36,6 +36,9 @@ namespace Breeze
 
         m_ui.setupUi( this );
 
+        // can't work on Wayland and, since KDecoration3, doesn't work on X11 either
+        m_ui.isDialog->setVisible(false);
+
         connect( m_ui.buttonBox->button(QDialogButtonBox::Cancel), &QAbstractButton::clicked, this, &QWidget::close);
 
         // store checkboxes from ui into list
@@ -57,7 +60,7 @@ namespace Breeze
         m_ui.opacityOverrideLabelSpinBox->setSpecialValueText(tr("None"));
         connect( m_ui.opacityOverrideLabelSpinBox, QOverload<int>::of(&QSpinBox::valueChanged), [=](int /*i*/){updateChanged();} );
         connect( m_ui.flatTitleBar, SIGNAL(clicked()), SLOT(updateChanged()) );
-        connect( m_ui.isDialog, SIGNAL(clicked()), SLOT(updateChanged()) );
+        //connect( m_ui.isDialog, SIGNAL(clicked()), SLOT(updateChanged()) );
     }
 
     //___________________________________________
@@ -75,7 +78,7 @@ namespace Breeze
         m_ui.opaqueTitleBar->setChecked( m_exception->opaqueTitleBar() );
         m_ui.opacityOverrideLabelSpinBox->setValue( m_exception->opacityOverride() );
         m_ui.flatTitleBar->setChecked( m_exception->flatTitleBar() );
-        m_ui.isDialog->setChecked( m_exception->isDialog() );
+        //m_ui.isDialog->setChecked( m_exception->isDialog() );
 
         // mask
         for( CheckBoxMap::iterator iter = m_checkboxes.begin(); iter != m_checkboxes.end(); ++iter )
@@ -95,7 +98,7 @@ namespace Breeze
         m_exception->setOpaqueTitleBar( m_ui.opaqueTitleBar->isChecked() );
         m_exception->setOpacityOverride( m_ui.opacityOverrideLabelSpinBox->value() );
         m_exception->setFlatTitleBar( m_ui.flatTitleBar->isChecked() );
-        m_exception->setIsDialog( m_ui.isDialog->isChecked() );
+        //m_exception->setIsDialog( m_ui.isDialog->isChecked() );
 
         // mask
         unsigned int mask = None;
@@ -128,8 +131,8 @@ namespace Breeze
             modified = true;
         else if (m_exception->flatTitleBar() != m_ui.flatTitleBar->isChecked())
             modified = true;
-        else if (m_exception->isDialog() != m_ui.isDialog->isChecked())
-            modified = true;
+        //else if (m_exception->isDialog() != m_ui.isDialog->isChecked())
+        //    modified = true;
         else
         {
             // check mask

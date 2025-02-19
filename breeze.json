@@ -5,7 +5,7 @@
         "Name": "BreezeEnhanced",
     },
     "X-KDE-ConfigModule": "kcm_breezeenhanced",
-    "org.kde.kdecoration2": {
+    "org.kde.kdecoration3": {
         "blur": true,
         "recommendedBorderSize": "None"
     }

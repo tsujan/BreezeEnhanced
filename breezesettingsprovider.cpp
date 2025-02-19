@@ -22,7 +22,7 @@
 
 #include "breezeexceptionlist.h"
 
-#include <KWindowInfo>
+//#include <KWindowInfo>
 
 #include <QRegularExpression>
 #include <QTextStream>
@@ -75,8 +75,8 @@ namespace Breeze
         QString windowTitle;
         QString windowClass;
 
-        // get the client
-        const auto client = decoration->window();
+        // get the decorated window
+        const auto w = decoration->window();
 
         for (auto internalSettings : std::as_const(m_exceptions))
         {
@@ -88,7 +88,7 @@ namespace Breeze
 
             /*if (internalSettings->isDialog())
             {
-                KWindowInfo info(client->windowId(), NET::WMWindowType);
+                KWindowInfo info(w->windowId(), NET::WMWindowType);
                 if (info.valid()
                     && info.windowType(NET::NormalMask | NET::DialogMask) != NET::Dialog) {
                     continue;
@@ -104,13 +104,13 @@ namespace Breeze
             {
                 case InternalSettings::ExceptionWindowTitle:
                 {
-                    value = windowTitle.isEmpty() ? (windowTitle = client->caption()):windowTitle;
+                    value = windowTitle.isEmpty() ? (windowTitle = w->caption()):windowTitle;
                     break;
                 }
 
                 default:
                 case InternalSettings::ExceptionWindowClassName: {
-                    value = windowClass.isEmpty() ? (windowClass = client->windowClass()) : windowClass;
+                    value = windowClass.isEmpty() ? (windowClass = w->windowClass()) : windowClass;
                     break;
                 }
 

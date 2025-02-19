@@ -41,19 +41,18 @@ namespace Breeze
         public:
 
         //! constructor from list
-        explicit ExceptionList( const InternalSettingsList& exceptions = InternalSettingsList() ):
-            _exceptions( exceptions )
+        explicit ExceptionList(const InternalSettingsList& exceptions = InternalSettingsList()):
+            _exceptions(exceptions)
         {}
 
         //! exceptions
-        const InternalSettingsList& get( void ) const
-        { return _exceptions; }
+        const InternalSettingsList& get(void) const {return _exceptions;}
 
         //! read from KConfig
-        void readConfig( KSharedConfig::Ptr );
+        void readConfig(KSharedConfig::Ptr);
 
         //! write to kconfig
-        void writeConfig( KSharedConfig::Ptr );
+        void writeConfig(KSharedConfig::Ptr);
 
         protected:
 
@@ -61,10 +60,10 @@ namespace Breeze
         static QString exceptionGroupName(int index);
 
         //! read configuration
-        static void readConfig( KCoreConfigSkeleton*, KConfig*, const QString& );
+        static void readConfig(KCoreConfigSkeleton*, KConfig*, const QString&);
 
         //! write configuration
-        static void writeConfig( KCoreConfigSkeleton*, KConfig*, const QString& );
+        static void writeConfig(KCoreConfigSkeleton*, KConfig*, const QString&);
 
         private:
 
