@@ -1,6 +1,7 @@
 V6.3
 ---------
  * Bumped the version to 6.3 and imported some changes from Breeze 6.3.0.
+ * Fixed a problem in a ui file.
 
 V6.2
 ---------

@@ -381,6 +381,13 @@
        <string>Animations</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0" colspan="3">
+        <widget class="QCheckBox" name="animationsEnabled">
+         <property name="text">
+          <string>Enable animations</string>
+         </property>
+        </widget>
+       </item>
        <item row="1" column="0">
         <widget class="QLabel" name="animationsDurationLabel">
          <property name="enabled">
@@ -422,13 +429,6 @@
           </size>
          </property>
         </spacer>
-       </item>
-       <item row="0" column="0" colspan="3">
-        <widget class="QCheckBox" name="animationsEnabled">
-         <property name="text">
-          <string>Enable animations</string>
-         </property>
-        </widget>
        </item>
        <item row="2" column="0" colspan="3">
         <spacer name="verticalSpacer_2">
@@ -593,20 +593,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <tabstops>
-  <tabstop>tabWidget</tabstop>
-  <tabstop>titleAlignment</tabstop>
-  <tabstop>buttonSize</tabstop>
-  <tabstop>titleMarginSpinBox</tabstop>
-  <tabstop>btnSpacingSpinBox</tabstop>
-  <tabstop>drawBackgroundGradient</tabstop>
-  <tabstop>drawSizeGrip</tabstop>
-  <tabstop>animationsEnabled</tabstop>
-  <tabstop>animationsDuration</tabstop>
-  <tabstop>shadowSize</tabstop>
-  <tabstop>shadowStrength</tabstop>
-  <tabstop>shadowColor</tabstop>
- </tabstops>
  <resources/>
  <connections>
   <connection>
