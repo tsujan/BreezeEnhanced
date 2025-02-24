@@ -10,7 +10,7 @@ BreezeEnhanced is a fork of KDE Breeze decoration with the following changes:
  * By default, the close, minimize and maximize buttons are macOS-like and their sizes change on mouse-over when animation is enabled.
  * The spacing between buttons is configurable.
  * Opaqueness, opacity override and flatness are added to the exception list properties.
- * Title-bar font is set indpendent from the KDE font settings (for use outside KDE).
+ * The title-bar font is set independently of the KDE font settings (for use outside KDE).
 
 Please note that BreezeEnhanced is not related to the Breeze widget style. In fact, it is made to match various themes of the [Kvantum](https://github.com/tsujan/Kvantum) widget style but it works with all styles.
 
@@ -33,7 +33,7 @@ cmake .. -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_BUILD_TYPE=Release -DKDE_INSTALL_LI
 make
 sudo make install
 ```
-After the intallation, restart KWin by logging out and in. Then, BreezeEnhanced will appear in *System Settings &rarr; Application Style &rarr; Window Decorations*.
+After the installation, restart KWin by logging out and in. Then, BreezeEnhanced will appear in *System Settings &rarr; Application Style &rarr; Window Decorations*.
 
 ### Installation with package manager
 
