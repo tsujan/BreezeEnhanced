@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.16 FATAL_ERROR)
 
 project(breezeenhanced)
-set(PROJECT_VERSION "6.7.0")
+set(PROJECT_VERSION "6.8.0")
 set(PROJECT_VERSION_MAJOR 6)
 
 include(WriteBasicConfigVersionFile)
 include(FeatureSummary)
-set(QT_MIN_VERSION "6.10.0")
-set(KF6_MIN_VERSION "6.18.0")
+set(QT_MIN_VERSION "6.11.0")
+set(KF6_MIN_VERSION "6.30.0")
 
 find_package(ECM ${KF6_MIN_VERSION} REQUIRED NO_MODULE)
 

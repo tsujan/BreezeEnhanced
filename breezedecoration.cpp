@@ -223,6 +223,7 @@ namespace Breeze
 
         connect(w, &KDecoration3::DecoratedWindow::activeChanged, this, &Decoration::updateActiveState);
         connect(this, &KDecoration3::Decoration::bordersChanged, this, &Decoration::updateTitleBar);
+        connect(this, &KDecoration3::Decoration::bordersChanged, this, &Decoration::updateButtonsGeometry);
         connect(w, &KDecoration3::DecoratedWindow::adjacentScreenEdgesChanged, this, &Decoration::updateTitleBar);
         connect(w, &KDecoration3::DecoratedWindow::widthChanged, this, &Decoration::updateTitleBar);
         connect(w, &KDecoration3::DecoratedWindow::maximizedChanged, this, &Decoration::updateTitleBar);
